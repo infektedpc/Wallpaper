@@ -1,0 +1,319 @@
+' Gambas class file
+
+Public SelectedImage As String = ""
+Public MSG_Unsupported_Image_Type As String = "Please select a supported image type."
+Public Wallpaperloop_Value As Integer = 0
+Public Timed_Wallpaper_1 As String = ""
+Public Timed_Wallpaper_2 As String = ""
+Public Timed_Wallpaper_3 As String = ""
+Public Timed_Wallpaper_4 As String = ""
+Public aspect_lock As Boolean = True
+Public Loading_wallpaper_Lock As Boolean = False
+
+Public Sub Form_Open()
+  
+  Dim TempString As String
+  
+  Shell "gsettings get org.gnome.desktop.background picture-options" To TempString
+  TempString = Replace(TempString, "'", "")
+  
+  FMain.Center
+  
+  If Not Exist("/home/" & System.User.Name & "/Pictures/Wallpaper") Then
+    Mkdir ("/home/" & System.User.Name & "/Pictures/Wallpaper")
+  Endif
+  
+  Dialog.Path = User.Home
+  
+  ComboBox_TimeList.Index = 0 '1 Minute
+  
+  If (TempString = "none\n") Then
+    ComboBox2.Index = 0
+  Endif
+  If (TempString = "wallpaper\n") Then
+    ComboBox2.Index = 1
+  Endif
+  If (TempString = "centered\n") Then
+    ComboBox2.Index = 2
+  Endif
+  If (TempString = "scaled\n") Then
+    ComboBox2.Index = 3
+  Endif
+  If (TempString = "stretched\n") Then
+    ComboBox2.Index = 4
+  Endif
+  If (TempString = "zoom\n") Then
+    ComboBox2.Index = 5
+  Endif
+  If (TempString = "spanned\n") Then
+    ComboBox2.Index = 6
+  Endif
+  
+End
+
+Public Sub Button_SetWallPaper_Click()
+  
+  If Not IconView1.Key = "" Then 
+    Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView1.Key
+  Endif
+  
+End
+
+Public Sub Button_AddImage_Click()
+  
+  Dim ImageFile As String
+  
+  Dialog.Title = "Select Image"
+  Dialog.filter = ["*.jpg;*.jpeg;*.png;", "All Files", "*.jpg;*.jpeg", "Joint Photographic Expert Group", "*.png", "Portable Network Graphics"]
+  If Dialog.OpenFile(True) Then Return
+  For Each ImageFile In Dialog.Paths
+    Print ImageFile;
+    Print "/home/" & System.User.Name & "/Pictures/Wallpaper/" & File.Name(ImageFile);
+    Copy ImageFile To "/home/" & System.User.Name & "/Pictures/Wallpaper/" & File.Name(ImageFile)
+  Next
+  Load_Wallpapers
+  
+End
+
+Public Sub Load_Wallpapers()
+  
+  Dim TempImage As Image
+  Dim Wallpapersize As String
+  Dim Directory As String 
+  Dim Files As String[] 
+  Dim FileName As String 
+  
+  IconView1.Clear
+  
+  Directory = "/home/" & System.User.Name & "/Pictures/Wallpaper/"
+  Files = Dir(Directory, "*.png") 
+  Files.Insert(Dir(Directory, "*.jpg")) 
+  Files.Insert(Dir(Directory, "*.jpeg")) 
+  
+  For Each FileName In Files
+    TempImage = Image.Load("/home/" & System.User.Name & "/Pictures/Wallpaper/" & FileName)
+    Wallpapersize = TempImage.Width & "x" & TempImage.Height
+    TempImage = TempImage.Stretch(295, 184)
+    IconView1.Add("/home/" & System.User.Name & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
+    
+    Iconview1.Refresh
+    Wait
+  Next
+  TempImage.Clear
+  
+End
+
+Public Sub TrayIcon1_Menu()
+  TrayMenu.Popup()
+End
+
+Public Sub PictureBox_TimedWallpaper1_MouseDown()
+  
+  Dim TempImage As Image
+  'Check if IconView1.Key is not em
+  If Not IconView1.Key = "" Then
+    If Not (Iconview1.key = Timed_Wallpaper_2) Then
+      If Not (Iconview1.key = Timed_Wallpaper_3) Then
+        If Not (Iconview1.key = Timed_Wallpaper_4) Then
+          Timed_Wallpaper_1 = IconView1.Key
+          TempImage = Image.Load(Timed_Wallpaper_1)
+          TempImage = TempImage.Stretch(70, 119)
+          PictureBox_TimedWallpaper1.Picture = TempImage.Picture
+          TempImage.Clear
+        Endif
+      Endif
+    Endif
+  Endif
+  
+End
+
+Public Sub PictureBox_TimedWallpaper2_MouseDown()
+  
+  Dim TempImage As Image
+  
+  If Not IconView1.Key = "" Then
+    If Not (Iconview1.key = Timed_Wallpaper_1) Then
+      If Not (Iconview1.key = Timed_Wallpaper_3) Then
+        If Not (Iconview1.key = Timed_Wallpaper_4) Then
+          Timed_Wallpaper_2 = IconView1.Key
+          TempImage = Image.Load(Timed_Wallpaper_2)
+          TempImage = TempImage.Stretch(70, 119)
+          PictureBox_TimedWallpaper2.Picture = TempImage.Picture
+          TempImage.clear
+        Endif
+      Endif
+    Endif
+  Endif
+  
+End
+
+Public Sub PictureBox_TimedWallpaper3_MouseDown()
+  
+  Dim TempImage As Image
+  
+  If Not IconView1.Key = "" Then
+    If Not (Iconview1.key = Timed_Wallpaper_1) Then
+      If Not (Iconview1.key = Timed_Wallpaper_2) Then
+        If Not (Iconview1.key = Timed_Wallpaper_4) Then
+          Timed_Wallpaper_3 = IconView1.Key
+          TempImage = Image.Load(Timed_Wallpaper_3)
+          TempImage = TempImage.Stretch(70, 119)
+          PictureBox_TimedWallpaper3.Picture = TempImage.Picture
+          TempImage.clear
+        Endif
+      Endif
+    Endif
+  Endif
+  
+End
+
+Public Sub PictureBox_TimedWallpaper4_MouseDown()
+  
+  Dim TempImage As Image
+  
+  If Not IconView1.Key = "" Then
+    If Not (Iconview1.key = Timed_Wallpaper_1) Then
+      If Not (Iconview1.key = Timed_Wallpaper_2) Then
+        If Not (Iconview1.key = Timed_Wallpaper_3) Then
+          Timed_Wallpaper_4 = IconView1.Key
+          TempImage = Image.Load(Timed_Wallpaper_4)
+          TempImage = TempImage.Stretch(70, 119)
+          PictureBox_TimedWallpaper4.Picture = TempImage.Picture
+          TempImage.clear
+        Endif
+      Endif
+    Endif
+  Endif
+  
+End
+
+Public Sub ComboBox_TimeList_Click()
+  
+  If ComboBox_TimeList.Index = 0 Then
+    Timer1.Delay = 1000 * 60
+  Endif
+  
+  If ComboBox_TimeList.Index = 1 Then
+    Timer1.Delay = 3000 * 60
+  Endif
+  
+  If ComboBox_TimeList.Index = 2 Then
+    Timer1.Delay = 5000 * 60
+  Endif
+  
+  If ComboBox_TimeList.Index = 3 Then
+    Timer1.Delay = 10000 * 60
+  Endif
+  
+End
+
+Public Sub Timer1_Timer()
+  
+  Wallpaperloop_Value = Wallpaperloop_Value + 1 
+  
+  If Wallpaperloop_Value = 1 Then 
+    
+    'Check if wallpaper string is not emtpy 
+    If Not Timed_Wallpaper_1 = "" Then 
+      'Set wallpaper 
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_1
+    Else 
+      Wallpaperloop_Value = 2 
+    Endif 
+  Endif 
+  
+  If Wallpaperloop_Value = 2 Then 
+    
+    'Check if wallpaper string is not emtpy 
+    If Not Timed_Wallpaper_2 = "" Then  
+      'Set wallpaper 
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_2
+    Else 
+      Wallpaperloop_Value = 3 
+    Endif 
+  Endif 
+  
+  If Wallpaperloop_Value = 3 Then 
+    
+    'Check if wallpaper string is not emtpy 
+    If Not Timed_Wallpaper_3 = "" Then 
+      'Set wallpaper 
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_3
+    Else 
+      Wallpaperloop_Value = 4 
+    Endif 
+  Endif 
+  
+  If Wallpaperloop_Value = 4 Then 
+    
+    'Check if wallpaper string is not emtpy 
+    If Not Timed_Wallpaper_4 = "" Then 
+      'Set wallpaper 
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_4
+      Wallpaperloop_Value = 0 
+    Else 
+      Wallpaperloop_Value = 1 
+    Endif 
+  Endif
+  
+End
+
+Public Sub ComboBox2_Click()
+  
+  If aspect_lock = False Then
+    If ComboBox2.Index = 0 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options none"
+    Endif
+    If ComboBox2.Index = 1 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options wallpaper"
+    Endif
+    If ComboBox2.Index = 2 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options centered"
+    Endif
+    If ComboBox2.Index = 3 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options scaled"
+    Endif
+    If ComboBox2.Index = 4 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options stretched"
+    Endif
+    If ComboBox2.Index = 5 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options zoom"
+    Endif
+    If ComboBox2.Index = 6 Then
+      Shell "gsettings set org.gnome.desktop.background picture-options spanned"
+    Endif
+  Endif
+  aspect_lock = False
+  
+End
+
+Public Sub SwitchButton1_Click()
+  
+  If SwitchButton1.Value = True Then
+    Timer1.Enabled = True
+  Else
+    Timer1.Enabled = False
+  Endif
+  
+End
+
+Public Sub Form_Activate()
+  
+  If Loading_wallpaper_Lock = False Then
+    Load_Wallpapers()
+  Endif
+  Loading_wallpaper_Lock = True
+  
+End
+
+Public Sub Button_RemoveImage_Click()
+  
+  If Message.Question("You Sure You Want To Remove:\n" & Iconview1.key, "Yes", "Cancel") = 1 Then
+    If Not IconView1.Key = "" Then
+      Kill Iconview1.key
+      Iconview1.Remove(Iconview1.Key)
+      Load_Wallpapers
+    Endif
+  Endif
+  
+End

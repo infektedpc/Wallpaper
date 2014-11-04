@@ -1,0 +1,74 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,142,83)
+  Icon = Picture["wallpaper.png"]
+  Resizable = False
+  { TrayMenu Menu
+    Text = ("TrayMenu")
+    Visible = False
+  }
+  { Button_AddImage Button
+    MoveScaled(114,1,13,4)
+    Text = ("Add")
+    Picture = Picture["icon:/22/add"]
+  }
+  { IconView1 IconView
+    MoveScaled(1,6,140,65)
+    IconLines = 1
+  }
+  { TrayIcon1 #TrayIcon
+    #MoveScaled(128,89)
+  }
+  { ComboBox_TimeList ComboBox
+    MoveScaled(73,72,18,4)
+    ReadOnly = True
+    List = [("1 Min"), ("3 Min"), ("5 Min"), ("10 Min")]
+  }
+  { PictureBox_TimedWallpaper1 PictureBox
+    MoveScaled(1,72,17,10)
+    Stretch = True
+    Border = Border.Sunken
+  }
+  { PictureBox_TimedWallpaper2 PictureBox
+    MoveScaled(19,72,17,10)
+    Stretch = True
+    Border = Border.Sunken
+  }
+  { PictureBox_TimedWallpaper3 PictureBox
+    MoveScaled(37,72,17,10)
+    Stretch = True
+    Border = Border.Sunken
+  }
+  { PictureBox_TimedWallpaper4 PictureBox
+    MoveScaled(55,72,17,10)
+    Stretch = True
+    Border = Border.Sunken
+  }
+  { Timer1 #Timer
+    #MoveScaled(135,89)
+  }
+  { Button_RemoveImage Button
+    MoveScaled(128,1,13,4)
+    Text = ("Remove")
+    Picture = Picture["icon:/22/remove"]
+  }
+  { Label1 Label
+    MoveScaled(2,1,7,4)
+    Text = ("Aspect:")
+  }
+  { ComboBox2 ComboBox
+    MoveScaled(9,1,21,4)
+    ReadOnly = True
+    List = [("None"), ("Wallpaper"), ("Centered"), ("Scaled"), ("Stretched"), ("Zoom"), ("Span")]
+  }
+  { SwitchButton1 SwitchButton
+    MoveScaled(73,78,18,4)
+    Animated = True
+  }
+  { Button_SetWallPaper Button
+    MoveScaled(124,72,17,4)
+    Text = ("Set WallPaper")
+    Picture = Picture["icon:/22/ok"]
+  }
+}
