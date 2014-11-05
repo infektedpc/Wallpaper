@@ -12,20 +12,16 @@ Public Loading_wallpaper_Lock As Boolean = False
 
 Public Sub Form_Open()
   
+  'Get And Set Dafult Value Of Aspect For Wallpaper
   Dim TempString As String
   
   Shell "gsettings get org.gnome.desktop.background picture-options" To TempString
-  TempString = Replace(TempString, "'", "")
-  
-  FMain.Center
+  TempString = Replace(TempString, "'", "") 
   
   If Not Exist("/home/" & System.User.Name & "/Pictures/Wallpaper") Then
     Mkdir ("/home/" & System.User.Name & "/Pictures/Wallpaper")
   Endif
   
-  Dialog.Path = User.Home
-  
-  ComboBox_TimeList.Index = 0 '1 Minute
   
   If (TempString = "none\n") Then
     ComboBox_Aspect.Index = 0
@@ -48,6 +44,15 @@ Public Sub Form_Open()
   If (TempString = "spanned\n") Then
     ComboBox_Aspect.Index = 6
   Endif
+  
+  'Set Dialog Path For Add Image
+  Dialog.Path = User.Home
+  
+  'Set Time Combobox To A Default Value
+  ComboBox_TimeList.Index = 0 '1 Minute
+  
+  'Center Program On Desktop
+  FMain.Center
   
 End
 
@@ -79,8 +84,10 @@ End
 
 Public Sub Load_Wallpapers()
   'Loading Of All Wallpapers
-  'Using Temp Image To Reduce Image Sizes
-  'Remember To Clear Temp Image To Keep Ram Usage Down
+  'Using TempImage To Reduce Image Sizes
+  'Remember To Clear TempImage To Keep Ram Usage Down
+  'Remember To Clear Iconview1
+  
   Dim TempImage As Image
   Dim Wallpapersize As String
   Dim Directory As String 
