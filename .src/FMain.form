@@ -57,7 +57,7 @@
     MoveScaled(2,1,7,4)
     Text = ("Aspect:")
   }
-  { ComboBox2 ComboBox
+  { ComboBox_Aspect ComboBox
     MoveScaled(9,1,21,4)
     ReadOnly = True
     List = [("None"), ("Wallpaper"), ("Centered"), ("Scaled"), ("Stretched"), ("Zoom"), ("Span")]

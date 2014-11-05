@@ -28,31 +28,32 @@ Public Sub Form_Open()
   ComboBox_TimeList.Index = 0 '1 Minute
   
   If (TempString = "none\n") Then
-    ComboBox2.Index = 0
+    ComboBox_Aspect.Index = 0
   Endif
   If (TempString = "wallpaper\n") Then
-    ComboBox2.Index = 1
+    ComboBox_Aspect.Index = 1
   Endif
   If (TempString = "centered\n") Then
-    ComboBox2.Index = 2
+    ComboBox_Aspect.Index = 2
   Endif
   If (TempString = "scaled\n") Then
-    ComboBox2.Index = 3
+    ComboBox_Aspect.Index = 3
   Endif
   If (TempString = "stretched\n") Then
-    ComboBox2.Index = 4
+    ComboBox_Aspect.Index = 4
   Endif
   If (TempString = "zoom\n") Then
-    ComboBox2.Index = 5
+    ComboBox_Aspect.Index = 5
   Endif
   If (TempString = "spanned\n") Then
-    ComboBox2.Index = 6
+    ComboBox_Aspect.Index = 6
   Endif
   
 End
 
 Public Sub Button_SetWallPaper_Click()
-  
+  'Set Wallpaper For Desktop
+  'We Use Iconview1.key to Get Image Path
   If Not IconView1.Key = "" Then 
     Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView1.Key
   Endif
@@ -60,7 +61,8 @@ Public Sub Button_SetWallPaper_Click()
 End
 
 Public Sub Button_AddImage_Click()
-  
+  'Use Dialog To Add Image To Prorogram And Folder
+  'We Use ImageFile To Get Copy Path And File.Name(ImageFile) to get Destination Path
   Dim ImageFile As String
   
   Dialog.Title = "Select Image"
@@ -76,7 +78,9 @@ Public Sub Button_AddImage_Click()
 End
 
 Public Sub Load_Wallpapers()
-  
+  'Loading Of All Wallpapers
+  'Using Temp Image To Reduce Image Sizes
+  'Remember To Clear Temp Image To Keep Ram Usage Down
   Dim TempImage As Image
   Dim Wallpapersize As String
   Dim Directory As String 
@@ -104,13 +108,14 @@ Public Sub Load_Wallpapers()
 End
 
 Public Sub TrayIcon1_Menu()
+'System Tray Menu
   TrayMenu.Popup()
 End
 
 Public Sub PictureBox_TimedWallpaper1_MouseDown()
-  
+  'First Timed Wallpaper Picturebox
+  'Make Sure No Other Timed Wallpaper Has The Same Image
   Dim TempImage As Image
-  'Check if IconView1.Key is not em
   If Not IconView1.Key = "" Then
     If Not (Iconview1.key = Timed_Wallpaper_2) Then
       If Not (Iconview1.key = Timed_Wallpaper_3) Then
@@ -128,7 +133,8 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
 End
 
 Public Sub PictureBox_TimedWallpaper2_MouseDown()
-  
+  'Second Timed Wallpaper Picturebox
+  'Make Sure No Other Timed Wallpaper Has The Same Image
   Dim TempImage As Image
   
   If Not IconView1.Key = "" Then
@@ -148,7 +154,8 @@ Public Sub PictureBox_TimedWallpaper2_MouseDown()
 End
 
 Public Sub PictureBox_TimedWallpaper3_MouseDown()
-  
+  'Third Timed Wallpaper Picturebox
+  'Make Sure No Other Timed Wallpaper Has The Same Image
   Dim TempImage As Image
   
   If Not IconView1.Key = "" Then
@@ -168,7 +175,8 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
 End
 
 Public Sub PictureBox_TimedWallpaper4_MouseDown()
-  
+  'Fourth Timed Wallpaper Picturebox
+  'Make Sure No Other Timed Wallpaper Has The Same Image
   Dim TempImage As Image
   
   If Not IconView1.Key = "" Then
@@ -188,7 +196,8 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
 End
 
 Public Sub ComboBox_TimeList_Click()
-  
+  'The Time List Combobox
+  'Time is in milliseconds so have to Multiply by 60
   If ComboBox_TimeList.Index = 0 Then
     Timer1.Delay = 1000 * 60
   Endif
@@ -208,7 +217,7 @@ Public Sub ComboBox_TimeList_Click()
 End
 
 Public Sub Timer1_Timer()
-  
+  'Some Type of Loop System Built By Pest121
   Wallpaperloop_Value = Wallpaperloop_Value + 1 
   
   If Wallpaperloop_Value = 1 Then 
@@ -258,28 +267,29 @@ Public Sub Timer1_Timer()
   
 End
 
-Public Sub ComboBox2_Click()
-  
+Public Sub ComboBox_Aspect_Click()
+  'Set Wallpaper Aspect Sizes (None,Wallpaper,Centered,Scaled,Stretched,Zoom,Spanned)
+  'A Lock Is Being Used Here
   If aspect_lock = False Then
-    If ComboBox2.Index = 0 Then
+    If ComboBox_Aspect.Index = 0 Then
       Shell "gsettings set org.gnome.desktop.background picture-options none"
     Endif
-    If ComboBox2.Index = 1 Then
+    If ComboBox_Aspect.Index = 1 Then
       Shell "gsettings set org.gnome.desktop.background picture-options wallpaper"
     Endif
-    If ComboBox2.Index = 2 Then
+    If ComboBox_Aspect.Index = 2 Then
       Shell "gsettings set org.gnome.desktop.background picture-options centered"
     Endif
-    If ComboBox2.Index = 3 Then
+    If ComboBox_Aspect.Index = 3 Then
       Shell "gsettings set org.gnome.desktop.background picture-options scaled"
     Endif
-    If ComboBox2.Index = 4 Then
+    If ComboBox_Aspect.Index = 4 Then
       Shell "gsettings set org.gnome.desktop.background picture-options stretched"
     Endif
-    If ComboBox2.Index = 5 Then
+    If ComboBox_Aspect.Index = 5 Then
       Shell "gsettings set org.gnome.desktop.background picture-options zoom"
     Endif
-    If ComboBox2.Index = 6 Then
+    If ComboBox_Aspect.Index = 6 Then
       Shell "gsettings set org.gnome.desktop.background picture-options spanned"
     Endif
   Endif
@@ -288,6 +298,7 @@ Public Sub ComboBox2_Click()
 End
 
 Public Sub SwitchButton1_Click()
+  'Turn On Timer For WallpaperChanger
   
   If SwitchButton1.Value = True Then
     Timer1.Enabled = True
@@ -298,7 +309,8 @@ Public Sub SwitchButton1_Click()
 End
 
 Public Sub Form_Activate()
-  
+  'Dirty Trick To Load Wallpapers Actively
+  'A Lock Is Being Used Here
   If Loading_wallpaper_Lock = False Then
     Load_Wallpapers()
   Endif
@@ -307,7 +319,7 @@ Public Sub Form_Activate()
 End
 
 Public Sub Button_RemoveImage_Click()
-  
+  'Remove An Image From Program And FOlder
   If Message.Question("You Sure You Want To Remove:\n" & Iconview1.key, "Yes", "Cancel") = 1 Then
     If Not IconView1.Key = "" Then
       Kill Iconview1.key
