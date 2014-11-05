@@ -74,9 +74,7 @@ Public Sub Button_AddImage_Click()
   Dialog.filter = ["*.jpg;*.jpeg;*.png;", "All Files", "*.jpg;*.jpeg", "Joint Photographic Expert Group", "*.png", "Portable Network Graphics"]
   If Dialog.OpenFile(True) Then Return
   For Each ImageFile In Dialog.Paths
-    Print ImageFile;
-    Print "/home/" & System.User.Name & "/Pictures/Wallpaper/" & File.Name(ImageFile);
-    Copy ImageFile To "/home/" & System.User.Name & "/Pictures/Wallpaper/" & File.Name(ImageFile)
+    Copy ImageFile To User.Home & "/Pictures/Wallpaper/" & File.Name(ImageFile)
   Next
   Load_Wallpapers
   
@@ -96,16 +94,16 @@ Public Sub Load_Wallpapers()
   
   IconView1.Clear
   
-  Directory = "/home/" & System.User.Name & "/Pictures/Wallpaper/"
+  Directory = User.Home & "/Pictures/Wallpaper/"
   Files = Dir(Directory, "*.png") 
   Files.Insert(Dir(Directory, "*.jpg")) 
   Files.Insert(Dir(Directory, "*.jpeg")) 
   
   For Each FileName In Files
-    TempImage = Image.Load("/home/" & System.User.Name & "/Pictures/Wallpaper/" & FileName)
+    TempImage = Image.Load(User.Home & "/Pictures/Wallpaper/" & FileName)
     Wallpapersize = TempImage.Width & "x" & TempImage.Height
     TempImage = TempImage.Stretch(295, 184)
-    IconView1.Add("/home/" & System.User.Name & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
+    IconView1.Add(User.Home & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
     
     Iconview1.Refresh
     Wait
@@ -326,10 +324,11 @@ Public Sub Form_Activate()
 End
 
 Public Sub Button_RemoveImage_Click()
-  'Remove An Image From Program And FOlder
+  'Remove An Image From Program And Folder
+  'Not Kill Removes Image Permanently Use Move Function Instead And Move To Trash
   If Message.Question("You Sure You Want To Remove:\n" & Iconview1.key, "Yes", "Cancel") = 1 Then
     If Not IconView1.Key = "" Then
-      Kill Iconview1.key
+      Move Iconview1.key To User.Home & "/.local/share/Trash/files/" & File.Name(Iconview1.Key)
       Iconview1.Remove(Iconview1.Key)
       Load_Wallpapers
     Endif
