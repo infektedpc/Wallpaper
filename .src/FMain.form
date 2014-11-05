@@ -1,74 +1,130 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,142,84)
+  MoveScaled(0,0,142,93)
   Icon = Picture["wallpaper.png"]
   Resizable = False
   { TrayMenu Menu
     Text = ("TrayMenu")
     Visible = False
   }
-  { Button_AddImage Button
-    MoveScaled(114,1,13,4)
-    Text = ("Add")
-    Picture = Picture["icon:/22/add"]
-  }
-  { IconView1 IconView
-    MoveScaled(1,6,140,65)
-    IconLines = 1
+  { Label1 Label
+    MoveScaled(112,74,7,4)
+    Text = ("Aspect:")
   }
   { TrayIcon1 #TrayIcon
-    #MoveScaled(128,89)
+    #MoveScaled(128,87)
   }
   { ComboBox_TimeList ComboBox
-    MoveScaled(73,72,18,4)
+    MoveScaled(73,74,18,4)
     ReadOnly = True
     List = [("1 Min"), ("3 Min"), ("5 Min"), ("10 Min")]
   }
   { PictureBox_TimedWallpaper1 PictureBox
-    MoveScaled(1,72,17,10)
+    MoveScaled(1,74,17,10)
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper2 PictureBox
-    MoveScaled(19,72,17,10)
+    MoveScaled(19,74,17,10)
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper3 PictureBox
-    MoveScaled(37,72,17,10)
+    MoveScaled(37,74,17,10)
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper4 PictureBox
-    MoveScaled(55,72,17,10)
+    MoveScaled(55,74,17,10)
     Stretch = True
     Border = Border.Sunken
   }
   { Timer1 #Timer
-    #MoveScaled(135,89)
+    #MoveScaled(135,87)
+  }
+  { SwitchButton1 SwitchButton
+    MoveScaled(73,80,18,4)
+    Animated = True
+  }
+  { Button_SetWallPaper Button
+    MoveScaled(124,80,17,4)
+    Text = ("Set WallPaper")
+    Picture = Picture["icon:/22/ok"]
+  }
+  { TabPanel1 TabPanel
+    MoveScaled(0,2,142,71)
+    Count = 2
+    Index = 0
+    Text = ("Wallpaper Gallery")
+    { IconView1 IconView
+      MoveScaled(0,0,142,67)
+      IconLines = 1
+    }
+    Index = 1
+    Text = ("Online Gallery")
+    { !IconView_Desktoppr IconView
+      MoveScaled(0,0,142,67)
+      #Public = True
+    }
+    Index = 0
   }
   { Button_RemoveImage Button
     MoveScaled(128,1,13,4)
     Text = ("Remove")
     Picture = Picture["icon:/22/remove"]
   }
-  { Label1 Label
-    MoveScaled(2,1,7,4)
-    Text = ("Aspect:")
+  { Button_AddImage Button
+    MoveScaled(114,1,13,4)
+    Text = ("Add")
+    Picture = Picture["icon:/22/add"]
   }
   { ComboBox_Aspect ComboBox
-    MoveScaled(9,1,21,4)
+    MoveScaled(120,74,21,4)
     ReadOnly = True
     List = [("None"), ("Wallpaper"), ("Centered"), ("Scaled"), ("Stretched"), ("Zoom"), ("Span")]
   }
-  { SwitchButton1 SwitchButton
-    MoveScaled(73,78,18,4)
-    Animated = True
+  { !HttpClient1 #HttpClient
+    #MoveScaled(114,87)
+    #Public = True
+    Timeout = 15
   }
-  { Button_SetWallPaper Button
-    MoveScaled(124,72,17,4)
-    Text = ("Set WallPaper")
-    Picture = Picture["icon:/22/ok"]
+  { !HttpClient2 #HttpClient
+    #MoveScaled(121,87)
+    #Public = True
+    Timeout = 15
+  }
+  { Button_RandomPage Button
+    MoveScaled(1,74,16,4)
+    Visible = False
+    Text = ("Random Page")
+  }
+  { Button_PreviousPage Button
+    MoveScaled(18,74,16,4)
+    Visible = False
+    Text = ("Previous Page")
+    Picture = Picture["icon:/16/previous"]
+  }
+  { Button_NextPage Button
+    MoveScaled(35,74,16,4)
+    Visible = False
+    Text = ("Next Page")
+    Picture = Picture["icon:/16/next"]
+  }
+  { SpinBox_Pages SpinBox
+    MoveScaled(52,74,9,4)
+    Visible = False
+    MinValue = 1
+    Value = 1
+  }
+  { Label_MaxPages Label
+    MoveScaled(62,75,15,2)
+    Visible = False
+    AutoResize = True
+    Text = ("Of ")
+  }
+  { Button1 Button
+    MoveScaled(92,87,16,4)
+    Text = ("Button1")
   }
 }
