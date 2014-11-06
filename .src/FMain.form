@@ -1,7 +1,7 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,142,93)
+  MoveScaled(0,0,142,85)
   Icon = Picture["wallpaper.png"]
   Resizable = False
   { TrayMenu Menu
@@ -85,14 +85,14 @@
     List = [("None"), ("Wallpaper"), ("Centered"), ("Scaled"), ("Stretched"), ("Zoom"), ("Span")]
   }
   { !HttpClient1 #HttpClient
-    #MoveScaled(114,87)
+    #MoveScaled(103,87)
     #Public = True
-    Timeout = 15
+    Timeout = 8
   }
   { !HttpClient2 #HttpClient
-    #MoveScaled(121,87)
+    #MoveScaled(111,87)
     #Public = True
-    Timeout = 15
+    Timeout = 8
   }
   { Button_RandomPage Button
     MoveScaled(1,74,16,4)
@@ -123,8 +123,14 @@
     AutoResize = True
     Text = ("Of ")
   }
-  { Button1 Button
-    MoveScaled(92,87,16,4)
-    Text = ("Button1")
+  { HttpClient3 #HttpClient
+    #MoveScaled(119,87)
+    Timeout = 12
+  }
+  { Button_SaveImage Button
+    MoveScaled(106,80,16,4)
+    Visible = False
+    Text = ("Save Image")
+    Picture = Picture["icon:/16/save"]
   }
 }

@@ -16,18 +16,22 @@ Public Desktoppr_IMAGE_WIDTH As String
 Public Desktoppr_IMAGE_HEIGHT As String
 Public Okay_To_Exit As Boolean = True
 
+Public Saved_Image_Name As String
+
+Public Set_The_Wallpaper As Boolean = False
+
 Public Sub Form_Open()
-  
+
   'Get And Set Dafult Value Of Aspect For Wallpaper
   Dim TempString As String
-  
+
   Shell "gsettings get org.gnome.desktop.background picture-options" To TempString
-  TempString = Replace(TempString, "'", "") 
-  
+  TempString = Replace(TempString, "'", "")
+
   If Not Exist("/home/" & System.User.Name & "/Pictures/Wallpaper") Then
     Mkdir ("/home/" & System.User.Name & "/Pictures/Wallpaper")
   Endif
-  
+
   If (TempString = "none\n") Then
     ComboBox_Aspect.Index = 0
   Endif
@@ -49,27 +53,41 @@ Public Sub Form_Open()
   If (TempString = "spanned\n") Then
     ComboBox_Aspect.Index = 6
   Endif
-  
+
   'Set Dialog Path For Add Image
   Dialog.Path = User.Home
-  
+
   'Set Time Combobox To A Default Value
   ComboBox_TimeList.Index = 0 '1 Minute
-  
+
   'Center Program On Desktop
   FMain.Center
- 
-  
+
+  HttpClient1.URL = "https://api.desktoppr.co/1/wallpapers?page=" & SpinBox_Pages.Value
+  HttpClient1.Get()
+
 End
 
 Public Sub Button_SetWallPaper_Click()
   'Set Wallpaper For Desktop
   'We Use Iconview1.key to Get Image Path
 
-  If Not IconView1.Key = "" Then 
-    Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView1.Key
-  Endif
   
+    If TabPanel1.Index = 0 Then
+       If Not IconView1.Key = "" Then
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView1.Key
+      Endif
+    Endif
+
+    If TabPanel1.Index = 1 Then
+      If Not IconView_Desktoppr.Key = "" Then
+      Set_The_Wallpaper = True
+      Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
+      HttpClient3.URL = IconView_Desktoppr.Key
+      HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+    Endif
+  Endif
+
 End
 
 Public Sub Button_AddImage_Click()
@@ -77,7 +95,7 @@ Public Sub Button_AddImage_Click()
   'We Use ImageFile To Get Copy Path And File.Name(ImageFile) to get Destination Path
 
   Dim ImageFile As String
-  
+
   Dialog.Title = "Select Image"
   Dialog.filter = ["*.jpg;*.jpeg;*.png;", "All Files", "*.jpg;*.jpeg", "Joint Photographic Expert Group", "*.png", "Portable Network Graphics"]
   If Dialog.OpenFile(True) Then Return
@@ -85,7 +103,7 @@ Public Sub Button_AddImage_Click()
     Copy ImageFile To User.Home & "/Pictures/Wallpaper/" & File.Name(ImageFile)
   Next
   Load_Wallpapers
-  
+
 End
 
 Public Sub Load_Wallpapers()
@@ -93,31 +111,31 @@ Public Sub Load_Wallpapers()
   'Using TempImage To Reduce Image Sizes
   'Remember To Clear TempImage To Keep Ram Usage Down
   'Remember To Clear Iconview1
-  
+
   Dim TempImage As Image
   Dim Wallpapersize As String
-  Dim Directory As String 
-  Dim Files As String[] 
-  Dim FileName As String 
-  
+  Dim Directory As String
+  Dim Files As String[]
+  Dim FileName As String
+
   IconView1.Clear
-  
+
   Directory = User.Home & "/Pictures/Wallpaper/"
-  Files = Dir(Directory, "*.png") 
-  Files.Insert(Dir(Directory, "*.jpg")) 
-  Files.Insert(Dir(Directory, "*.jpeg")) 
-  
+  Files = Dir(Directory, "*.png")
+  Files.Insert(Dir(Directory, "*.jpg"))
+  Files.Insert(Dir(Directory, "*.jpeg"))
+
   For Each FileName In Files
     TempImage = Image.Load(User.Home & "/Pictures/Wallpaper/" & FileName)
     Wallpapersize = TempImage.Width & "x" & TempImage.Height
     TempImage = TempImage.Stretch(295, 184)
     IconView1.Add(User.Home & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
-    
+
     Iconview1.Refresh
     Wait
   Next
   TempImage.Clear
-  
+
 End
 
 Public Sub TrayIcon1_Menu()
@@ -132,6 +150,7 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
   'Make Sure No Other Timed Wallpaper Has The Same Image
 
   Dim TempImage As Image
+
   If Not IconView1.Key = "" Then
     If Not (Iconview1.key = Timed_Wallpaper_2) Then
       If Not (Iconview1.key = Timed_Wallpaper_3) Then
@@ -145,7 +164,7 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub PictureBox_TimedWallpaper2_MouseDown()
@@ -153,7 +172,7 @@ Public Sub PictureBox_TimedWallpaper2_MouseDown()
   'Make Sure No Other Timed Wallpaper Has The Same Image
 
   Dim TempImage As Image
-  
+
   If Not IconView1.Key = "" Then
     If Not (Iconview1.key = Timed_Wallpaper_1) Then
       If Not (Iconview1.key = Timed_Wallpaper_3) Then
@@ -167,7 +186,7 @@ Public Sub PictureBox_TimedWallpaper2_MouseDown()
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub PictureBox_TimedWallpaper3_MouseDown()
@@ -175,7 +194,7 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
   'Make Sure No Other Timed Wallpaper Has The Same Image
 
   Dim TempImage As Image
-  
+
   If Not IconView1.Key = "" Then
     If Not (Iconview1.key = Timed_Wallpaper_1) Then
       If Not (Iconview1.key = Timed_Wallpaper_2) Then
@@ -189,7 +208,7 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub PictureBox_TimedWallpaper4_MouseDown()
@@ -197,7 +216,7 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
   'Make Sure No Other Timed Wallpaper Has The Same Image
 
   Dim TempImage As Image
-  
+
   If Not IconView1.Key = "" Then
     If Not (Iconview1.key = Timed_Wallpaper_1) Then
       If Not (Iconview1.key = Timed_Wallpaper_2) Then
@@ -211,7 +230,7 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
       Endif
     Endif
   Endif
-  
+
 End
 
 Public Sub ComboBox_TimeList_Click()
@@ -221,71 +240,71 @@ Public Sub ComboBox_TimeList_Click()
   If ComboBox_TimeList.Index = 0 Then
     Timer1.Delay = 1000 * 60
   Endif
-  
+
   If ComboBox_TimeList.Index = 1 Then
     Timer1.Delay = 3000 * 60
   Endif
-  
+
   If ComboBox_TimeList.Index = 2 Then
     Timer1.Delay = 5000 * 60
   Endif
-  
+
   If ComboBox_TimeList.Index = 3 Then
     Timer1.Delay = 10000 * 60
   Endif
-  
+
 End
 
 Public Sub Timer1_Timer()
   'Some Type of Loop System Built By Pest121
 
-  Wallpaperloop_Value = Wallpaperloop_Value + 1 
-  
-  If Wallpaperloop_Value = 1 Then 
-    
-    'Check if wallpaper string is not emtpy 
-    If Not Timed_Wallpaper_1 = "" Then 
-      'Set wallpaper 
+  Wallpaperloop_Value = Wallpaperloop_Value + 1
+
+  If Wallpaperloop_Value = 1 Then
+
+    'Check if wallpaper string is not emtpy
+    If Not Timed_Wallpaper_1 = "" Then
+      'Set wallpaper
       Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_1
-    Else 
-      Wallpaperloop_Value = 2 
-    Endif 
-  Endif 
-  
-  If Wallpaperloop_Value = 2 Then 
-    
-    'Check if wallpaper string is not emtpy 
-    If Not Timed_Wallpaper_2 = "" Then  
-      'Set wallpaper 
-      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_2
-    Else 
-      Wallpaperloop_Value = 3 
-    Endif 
-  Endif 
-  
-  If Wallpaperloop_Value = 3 Then 
-    
-    'Check if wallpaper string is not emtpy 
-    If Not Timed_Wallpaper_3 = "" Then 
-      'Set wallpaper 
-      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_3
-    Else 
-      Wallpaperloop_Value = 4 
-    Endif 
-  Endif 
-  
-  If Wallpaperloop_Value = 4 Then 
-    
-    'Check if wallpaper string is not emtpy 
-    If Not Timed_Wallpaper_4 = "" Then 
-      'Set wallpaper 
-      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_4
-      Wallpaperloop_Value = 0 
-    Else 
-      Wallpaperloop_Value = 1 
-    Endif 
+    Else
+      Wallpaperloop_Value = 2
+    Endif
   Endif
-  
+
+  If Wallpaperloop_Value = 2 Then
+
+    'Check if wallpaper string is not emtpy
+    If Not Timed_Wallpaper_2 = "" Then
+      'Set wallpaper
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_2
+    Else
+      Wallpaperloop_Value = 3
+    Endif
+  Endif
+
+  If Wallpaperloop_Value = 3 Then
+
+    'Check if wallpaper string is not emtpy
+    If Not Timed_Wallpaper_3 = "" Then
+      'Set wallpaper
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_3
+    Else
+      Wallpaperloop_Value = 4
+    Endif
+  Endif
+
+  If Wallpaperloop_Value = 4 Then
+
+    'Check if wallpaper string is not emtpy
+    If Not Timed_Wallpaper_4 = "" Then
+      'Set wallpaper
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & Timed_Wallpaper_4
+      Wallpaperloop_Value = 0
+    Else
+      Wallpaperloop_Value = 1
+    Endif
+  Endif
+
 End
 
 Public Sub ComboBox_Aspect_Click()
@@ -316,18 +335,18 @@ Public Sub ComboBox_Aspect_Click()
     Endif
   Endif
   aspect_lock = False
-  
+
 End
 
 Public Sub SwitchButton1_Click()
   'Turn On Timer For WallpaperChanger
-  
+
   If SwitchButton1.Value = True Then
     Timer1.Enabled = True
   Else
     Timer1.Enabled = False
   Endif
-  
+
 End
 
 Public Sub Form_Activate()
@@ -335,10 +354,10 @@ Public Sub Form_Activate()
   'A Lock Is Being Used Here
 
   If Loading_wallpaper_Lock = False Then
-  '  Load_Wallpapers()
+    Load_Wallpapers()
   Endif
   Loading_wallpaper_Lock = True
-  
+
 End
 
 Public Sub Button_RemoveImage_Click()
@@ -352,11 +371,11 @@ Public Sub Button_RemoveImage_Click()
       Load_Wallpapers
     Endif
   Endif
-  
+
 End
 
 Public Sub TabPanel1_Click()
-  
+
   If TabPanel1.Index = 0 Then
     Button_AddImage.Visible = True
     Button_RemoveImage.Visible = True
@@ -366,14 +385,16 @@ Public Sub TabPanel1_Click()
     PictureBox_TimedWallpaper4.Visible = True
     ComboBox_TimeList.Visible = True
     SwitchButton1.Visible = True
-    
+
     Button_RandomPage.Visible = False
     Button_PreviousPage.Visible = False
     Button_NextPage.Visible = False
     SpinBox_Pages.Visible = False
     Label_MaxPages.Visible = False
-    
-  Else
+    Button_SaveImage.Visible = False
+  Endif
+
+  If TabPanel1.Index = 1 Then
     Button_AddImage.Visible = False
     Button_RemoveImage.Visible = False
     PictureBox_TimedWallpaper1.Visible = False
@@ -382,31 +403,29 @@ Public Sub TabPanel1_Click()
     PictureBox_TimedWallpaper4.Visible = False
     ComboBox_TimeList.Visible = False
     SwitchButton1.Visible = False
-    
+
     Button_RandomPage.Visible = True
     Button_PreviousPage.Visible = True
     Button_NextPage.Visible = True
     SpinBox_Pages.Visible = True
     Label_MaxPages.Visible = True
-    
+Button_SaveImage.Visible = True
   Endif
-  
+
 End
 
-
-
 Public Sub HttpClient1_Finished()
-  
+
   Dim sBuf As String
   Dim Line_String As String
   Dim Requested_From_Desktoppr As String[]
-  
+
   sBuf = Read #HttpClient1, Lof(HttpClient1)
   Requested_From_Desktoppr = Split(sBuf, ",")
   Okay_To_Exit = False
   For Each Line_String In Requested_From_Desktoppr
     Line_String = Line_String & "\n"
-    
+
     'THUMB URL
     If InStr(Line_String, "thumb") > 0 And InStr(Line_String, "url") > 0 Then
       Line_String = Replace$(Line_String, Chr(34), "")
@@ -416,7 +435,7 @@ Public Sub HttpClient1_Finished()
       Line_String = Replace$(Line_String, "thumb_", "")
       Desktoppr_IMAGE_URL = Line_String
     Endif
-    
+
     'Desktopper_Image_Width
     If InStr(Line_String, "width") > 0 Then
       Line_String = Replace$(Line_String, Chr(34), "")
@@ -424,10 +443,10 @@ Public Sub HttpClient1_Finished()
       Line_String = Mid$(Line_String, 7)
       If InStr(Line_String, "296") = 0 And If InStr(Line_String, "960") = 0 Then
         Desktoppr_IMAGE_WIDTH = Line_String
-      Endif 
-      
+      Endif
+
     Endif
-    
+
     'Desktopper_Image_Height
     If InStr(Line_String, "height") > 0 Then
       Line_String = Replace$(Line_String, Chr(34), "")
@@ -435,31 +454,25 @@ Public Sub HttpClient1_Finished()
       Line_String = Replace$(Line_String, "\n", "")
       Line_String = Mid$(Line_String, 8)
       If InStr(Line_String, "185") = 0 And If InStr(Line_String, "639") = 0 And If InStr(Line_String, "540") = 0 And If InStr(Line_String, "600") = 0 Then
-        Desktoppr_IMAGE_HEIGHT = Line_String 
-      Endif 
-      
+        Desktoppr_IMAGE_HEIGHT = Line_String
+      Endif
+
     Endif
-    
+
     'IconView1 Add Items
     If Not IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) And If Not Desktoppr_IMAGE_URL = "" Then
       If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
-        
-        
-          Kill "/tmp/tempimage.jpeg"
-          Do While Exist("/tmp/tempimage.jpeg")
-          Wait 0.01
-        Loop
-        
+
         HttpClient2.URL = Desktoppr_THUMB_URL
         HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
-        
+
         Do While HttpClient2.Status > 0
           Wait 0.01
         Loop
-        
+
       Endif
     Endif
-    
+
     'PAGES
     If InStr(Line_String, "pages") > 0 Then
       Line_String = Replace$(Line_String, Chr(34), "")
@@ -470,101 +483,105 @@ Public Sub HttpClient1_Finished()
       Label_MaxPages.Text = "Of " & Line_String
     Endif
   Next
-  
+
   Okay_To_Exit = True
-  
+
 End
 
 Public Sub HttpClient1_Error()
-  
+
   Print ("Error Status: ") & HttpClient1.Status
   Print ("Error Text: ") & HttpClient1.ErrorText
-  
+
 End
 
 Public Sub HttpClient2_Error()
-  
+
   Print ("Error Status: ") & HttpClient2.Status
   Print ("Error Text: ") & HttpClient2.ErrorText
-  
+
 End
 
 Public Sub HttpClient1_Connect()
-  
+
   Print "(HttpClient1) Waiting for reply...\n";
-  
+
 End
 
 Public Sub HttpClient2_Connect()
-  
+
   Print "(HttpClient2) Waiting for reply...\n";
-  
+
 End
 
 Public Sub HttpClient2_Finished()
-  
+
   Dim TempImage2 As Image
-  
+
   If Exist("/tmp/tempimage.jpeg") Then
     TempImage2 = Image.Load("/tmp/tempimage.jpeg")
     TempImage2 = TempImage2.Stretch(295, 184)
     IconView_Desktoppr.Add(Desktoppr_IMAGE_URL, Desktoppr_IMAGE_WIDTH & "x" & Desktoppr_IMAGE_HEIGHT, TempImage2.Picture)
     IconView_Desktoppr.Item.EnsureVisible
     TempImage2.Clear
-    'Kill "/tmp/tempimage.jpeg"
+    Kill "/tmp/tempimage.jpeg"
     Desktoppr_IMAGE_URL = ""
     Desktoppr_IMAGE_WIDTH = ""
     Desktoppr_IMAGE_HEIGHT = ""
-    
-    
-     ' Do While Exist("/tmp/tempimage.jpeg")
-        '  Wait 0.01
-        'Loop
-    
+
   Endif
-  
+
 End
 
 Public Sub Button_PreviousPage_Click()
-  
+
   If HttpClient2.Status = 0 Then
     SpinBox_Pages.Value = SpinBox_Pages.Value - 1
   Endif
-  
+
 End
 
 Public Sub Button_NextPage_Click()
-  
+
   If HttpClient2.Status = 0 Then
     SpinBox_Pages.Value = SpinBox_Pages.Value + 1
   Endif
-  
+
 End
 
 Public Sub SpinBox_Pages_Change()
-  
+
   IconView_Desktoppr.Clear
   HttpClient1.URL = "https://api.desktoppr.co/1/wallpapers?page=" & SpinBox_Pages.Value
   HttpClient1.Get()
-  
+
 End
 
 Public Sub Button_RandomPage_Click()
-  
+
   Dim A_Random_Number As Integer
-  
+
   If HttpClient2.Status = 0 Then
     A_Random_Number = Rand(SpinBox_Pages.MinValue, SpinBox_Pages.MaxValue)
     Randomize
     SpinBox_Pages.Value = A_Random_Number
   Endif
-  
+
 End
 
+Public Sub Button_SaveImage_Click()
+
+  If Not IconView_Desktoppr.key = "" Then
+    Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
+    HttpClient3.URL = IconView_Desktoppr.Key
+    HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+  Endif
+
+End
 
 Public Sub Form_Close()
 
-   If Okay_To_Exit = False Then
+  If Okay_To_Exit = False Then
     Stop Event
   Else
     If Not HttpClient2.Status > 0 Then
@@ -575,10 +592,29 @@ Public Sub Form_Close()
 
 End
 
-Public Sub Button1_Click()
+Public Sub HttpClient3_Error()
 
-   
-  HttpClient1.URL = "https://api.desktoppr.co/1/wallpapers?page=" & SpinBox_Pages.Value
-  HttpClient1.Get()
+  Print ("Error Status: ") & HttpClient3.Status
+  Print ("Error Text: ") & HttpClient3.ErrorText
+
+End
+
+Public Sub HttpClient3_Connect()
+
+  Print "(HttpClient3) Waiting for reply...\n";
+
+End
+
+Public Sub HttpClient3_Finished()
+
+  If Set_The_Wallpaper = True Then
+    If Exist("/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name) Then
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name
+    Endif
+  Endif
+
+Set_The_Wallpaper = False
+ Saved_Image_Name = ""
+Load_Wallpapers
 
 End
