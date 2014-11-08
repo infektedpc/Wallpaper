@@ -363,7 +363,7 @@ End
 Public Sub TabPanel_Main_Click()
   
   Dim A_Random_Number As Integer
-
+  
   If TabPanel_Main.Index = 0 Then
     Button_AddImage.Visible = True
     Button_RemoveImage.Visible = True
@@ -455,28 +455,43 @@ Public Sub HttpClient1_Finished()
       Line_String = Replace$(Line_String, "}", "")
       Line_String = Replace$(Line_String, "\n", "")
       Line_String = Mid$(Line_String, 8)
-      If InStr(Line_String, "185") = 0 And If InStr(Line_String, "639") = 0 And If InStr(Line_String, "540") = 0 And If InStr(Line_String, "600") = 0 Then
+      'If InStr(Line_String, "185") = 0 And If InStr(Line_String, "639") = 0 And If InStr(Line_String, "540") = 0 And If InStr(Line_String, "600") = 0 Then
         Desktoppr_IMAGE_HEIGHT = Line_String
-      Endif
+      'Endif
       
     Endif
     
+    Print "NO W" & Desktoppr_IMAGE_WIDTH
+    Print "NO H" & Desktoppr_IMAGE_HEIGHT
+    
     'IconView1 Add Items
-    If Not IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) And If Not Desktoppr_IMAGE_URL = "" Then
-      If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
-        
-       If Exist("/tmp/tempimage.jpeg") Then
-          Kill "/tmp/tempimage.jpeg"
+    If Not Desktoppr_THUMB_URL = "" Then
+      'If Not IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) And If Not Desktoppr_IMAGE_URL = "" Then
+        If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
+          
+           Print "YES W" & Desktoppr_IMAGE_WIDTH
+           Print "YES H" & Desktoppr_IMAGE_HEIGHT
+          
+          If Exist("/tmp/tempimage.jpeg") Then
+            Kill "/tmp/tempimage.jpeg"
+          Endif
+          
+          HttpClient2.URL = Desktoppr_THUMB_URL
+          HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
+          
+          Do While HttpClient2.Status > 0
+            Wait 0.01
+          Loop
+          
+          
+    Kill "/tmp/tempimage.jpeg"
+    Desktoppr_IMAGE_URL = ""
+    Desktoppr_THUMB_URL = ""
+    Desktoppr_IMAGE_WIDTH = ""
+    Desktoppr_IMAGE_HEIGHT = ""
+          
         Endif
-        
-        HttpClient2.URL = Desktoppr_THUMB_URL
-        HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
-        
-        Do While HttpClient2.Status > 0
-          Wait 0.01
-        Loop
-        
-      Endif
+      'Endif
     Endif
     
     'PAGES
@@ -505,10 +520,6 @@ Public Sub HttpClient2_Finished()
     IconView_Desktoppr.Add(Desktoppr_IMAGE_URL, Desktoppr_IMAGE_WIDTH & "x" & Desktoppr_IMAGE_HEIGHT, TempImage2.Picture)
     IconView_Desktoppr.Item.EnsureVisible
     TempImage2.Clear
-    Kill "/tmp/tempimage.jpeg"
-    Desktoppr_IMAGE_URL = ""
-    Desktoppr_IMAGE_WIDTH = ""
-    Desktoppr_IMAGE_HEIGHT = ""
     
   Endif
   
@@ -524,11 +535,11 @@ Public Sub HttpClient3_Finished()
   
   Set_The_Wallpaper = False
   Saved_Image_Name = ""
-    ProgressBar1.Value = 0
-   ProgressBar1.Refresh
-   Wait 0.01
+  ProgressBar1.Value = 0
+  ProgressBar1.Refresh
+  Wait 0.01
   Load_Wallpapers
- 
+  
 End
 
 Public Sub HttpClient1_Error()
@@ -612,29 +623,30 @@ End
 
 Public Sub Button_SaveImage_Click()
   
- If HttpClient3.Status = 0 Then
-  If Not IconView_Desktoppr.key = "" Then
-    Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
-    HttpClient3.URL = IconView_Desktoppr.Key
-    HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+  If HttpClient3.Status = 0 Then
+    If Not IconView_Desktoppr.key = "" Then
+      Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
+      HttpClient3.URL = IconView_Desktoppr.Key
+      HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+    Endif
   Endif
- Endif
-   
+  
 End
 
 Public Sub HttpClient3_Progress()
+  
+  Dim I_PER As Integer
+  Dim F_PER As Float
 
-Dim I_PER As Integer
-Dim F_PER As Float
-I_PER = (HttpClient3.Downloaded * 100) / HttpClient3.TotalDownloaded
-F_PER = I_PER
-F_PER = F_PER / 100
-ProgressBar1.Value = F_PER
-
+  I_PER = (HttpClient3.Downloaded * 100) / HttpClient3.TotalDownloaded
+  F_PER = I_PER
+  F_PER = F_PER / 100
+  ProgressBar1.Value = F_PER
+  
 End
 
 Public Sub Form_Close()
- 
+  
   If Okay_To_Exit = False Then
     Stop Event
   Else
