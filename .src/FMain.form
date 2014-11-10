@@ -8,6 +8,102 @@
     Text = ("TrayMenu")
     Visible = False
   }
+  { TimedWallpaperMenu1 Menu
+    Text = ("TimedWallpaperMenu1")
+    Visible = False
+    { TimedWallpaperMenu1_SwitchWith2 Menu
+      Text = ("Switch with 2")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu1_SwitchWith3 Menu
+      Text = ("Switch with 3")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu1_SwitchWith4 Menu
+      Text = ("Switch with 4")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu1_ClearImage Menu
+      Text = ("Clear Iamge")
+      Picture = Picture["icon:/16/trash"]
+    }
+  }
+  { TimedWallpaperMenu2 Menu
+    Text = ("TimedWallpaperMenu2")
+    Visible = False
+    { TimedWallpaperMenu2_SwitchWith1 Menu
+      Text = ("Switch with 1")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu2_SwitchWith3 Menu
+      Text = ("Switch with 3")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu2_SwitchWith4 Menu
+      Text = ("Switch with 4")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu2_ClearImage Menu
+      Text = ("Clear Iamge")
+      Picture = Picture["icon:/16/trash"]
+    }
+  }
+  { TimedWallpaperMenu3 Menu
+    Text = ("TimedWallpaperMenu3")
+    Visible = False
+    { TimedWallpaperMenu3_SwitchWith1 Menu
+      Text = ("Switch with 1")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu3_SwitchWith2 Menu
+      Text = ("Switch with 2")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu3_SwitchWith4 Menu
+      Text = ("Switch with 4")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu3_ClearImage Menu
+      Text = ("Clear Iamge")
+      Picture = Picture["icon:/16/trash"]
+    }
+  }
+  { TimedWallpaperMenu4 Menu
+    Text = ("TimedWallpaperMenu4")
+    Visible = False
+    { TimedWallpaperMenu4_SwitchWith1 Menu
+      Text = ("Switch with 1")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu4_SwitchWith2 Menu
+      Text = ("Switch with 2")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu4_SwitchWith3 Menu
+      Text = ("Switch with 3")
+      Picture = Picture["icon:/16/right"]
+    }
+    { TimedWallpaperMenu4_ClearImage Menu
+      Text = ("Clear Iamge")
+      Picture = Picture["icon:/16/trash"]
+    }
+  }
+  { IconViewlocalMenu Menu
+    Text = ("IconViewlocalMenu")
+    Visible = False
+    { IconViewlocalMenu_Add Menu
+      Text = ("Add")
+      Picture = Picture["icon:/16/add"]
+    }
+    { IconViewlocalMenu_Remove Menu
+      Text = ("Remove")
+      Picture = Picture["icon:/16/remove"]
+    }
+    { IconViewlocalMenu_Reload Menu
+      Text = ("Reload")
+      Picture = Picture["icon:/16/refresh"]
+    }
+  }
   { Label_Aspect Label
     MoveScaled(116,74,7,4)
     Text = ("Aspect:")
@@ -57,8 +153,9 @@
     Count = 2
     Index = 0
     Text = ("Wallpaper Gallery")
-    { IconView_local IconView
+    { !IconView_Local IconView
       MoveScaled(0,0,142,67)
+      #Public = True
       IconLines = 1
     }
     Index = 1

@@ -7,17 +7,21 @@ Public Timed_Wallpaper_1 As String = ""
 Public Timed_Wallpaper_2 As String = ""
 Public Timed_Wallpaper_3 As String = ""
 Public Timed_Wallpaper_4 As String = ""
-Public aspect_lock As Boolean = True
+
+Public Aspect_Lock As Boolean = True
+
 Public Loading_Desktoppr_wallpapers_Lock As Boolean = False
+
+Public Loading_Local_wallpapers_Lock As Boolean = False
+
+Public Reloading_Local_wallpapers_Lock As Boolean = True
 
 Public Desktoppr_THUMB_URL As String
 Public Desktoppr_IMAGE_URL As String
 Public Desktoppr_IMAGE_WIDTH As String
 Public Desktoppr_IMAGE_HEIGHT As String
 Public Okay_To_Exit As Boolean = True
-
 Public Saved_Image_Name As String
-
 Public Set_The_Wallpaper As Boolean = False
 
 Public Sub Form_Open()
@@ -72,8 +76,8 @@ Public Sub Button_SetWallPaper_Click()
   'We Use Iconview1.key to Get Image Path
   
   If TabPanel_Main.Index = 0 Then
-    If Not IconView_local.Key = "" Then
-      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView_local.Key
+    If Not IconView_Local.Key = "" Then
+      Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView_Local.Key
     Endif
   Endif
   
@@ -83,24 +87,15 @@ Public Sub Button_SetWallPaper_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+      Reloading_Local_wallpapers_Lock = False
     Endif
   Endif
   
 End
 
 Public Sub Button_AddImage_Click()
-  'Use Dialog To Add Image To Prorogram And Folder
-  'We Use ImageFile To Get Copy Path And File.Name(ImageFile) to get Destination Path
   
-  Dim ImageFile As String
-  
-  Dialog.Title = "Select Image"
-  Dialog.filter = ["*.jpg;*.jpeg;*.png;", "All Files", "*.jpg;*.jpeg", "Joint Photographic Expert Group", "*.png", "Portable Network Graphics"]
-  If Dialog.OpenFile(True) Then Return
-  For Each ImageFile In Dialog.Paths
-    Copy ImageFile To User.Home & "/Pictures/Wallpaper/" & File.Name(ImageFile)
-  Next
-  Load_Wallpapers
+  AddImageToLocal()
   
 End
 
@@ -116,7 +111,7 @@ Public Sub Load_Wallpapers()
   Dim Files As String[]
   Dim FileName As String
   
-  IconView_local.Clear
+  IconView_Local.Clear
   
   Directory = User.Home & "/Pictures/Wallpaper/"
   Files = Dir(Directory, "*.png")
@@ -128,8 +123,8 @@ Public Sub Load_Wallpapers()
     TempImage = Image.Load(User.Home & "/Pictures/Wallpaper/" & FileName)
     Wallpapersize = TempImage.Width & "x" & TempImage.Height
     TempImage = TempImage.Stretch(295, 184)
-    IconView_local.Add(User.Home & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
-    IconView_local.Refresh
+    IconView_Local.Add(User.Home & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
+    IconView_Local.Refresh
     TempImage.Clear
   Next
   
@@ -148,15 +143,17 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
   
   Dim TempImage As Image
   
-  If Not IconView_local.Key = "" Then
-    If Not (IconView_local.key = Timed_Wallpaper_2) Then
-      If Not (IconView_local.key = Timed_Wallpaper_3) Then
-        If Not (IconView_local.key = Timed_Wallpaper_4) Then
-          Timed_Wallpaper_1 = IconView_local.Key
-          TempImage = Image.Load(Timed_Wallpaper_1)
-          TempImage = TempImage.Stretch(112, 63)
-          PictureBox_TimedWallpaper1.Picture = TempImage.Picture
-          TempImage.Clear
+  If Mouse.Left Then
+    If Not IconView_Local.Key = "" Then
+      If Not (IconView_Local.key = Timed_Wallpaper_2) Then
+        If Not (IconView_Local.key = Timed_Wallpaper_3) Then
+          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+            Timed_Wallpaper_1 = IconView_Local.Key
+            TempImage = Image.Load(Timed_Wallpaper_1)
+            TempImage = TempImage.Stretch(112, 63)
+            PictureBox_TimedWallpaper1.Picture = TempImage.Picture
+            TempImage.Clear
+          Endif
         Endif
       Endif
     Endif
@@ -170,15 +167,17 @@ Public Sub PictureBox_TimedWallpaper2_MouseDown()
   
   Dim TempImage As Image
   
-  If Not IconView_local.Key = "" Then
-    If Not (IconView_local.key = Timed_Wallpaper_1) Then
-      If Not (IconView_local.key = Timed_Wallpaper_3) Then
-        If Not (IconView_local.key = Timed_Wallpaper_4) Then
-          Timed_Wallpaper_2 = IconView_local.Key
-          TempImage = Image.Load(Timed_Wallpaper_2)
-          TempImage = TempImage.Stretch(112, 63)
-          PictureBox_TimedWallpaper2.Picture = TempImage.Picture
-          TempImage.clear
+  If Mouse.Left Then
+    If Not IconView_Local.Key = "" Then
+      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
+        If Not (IconView_Local.key = Timed_Wallpaper_3) Then
+          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+            Timed_Wallpaper_2 = IconView_Local.Key
+            TempImage = Image.Load(Timed_Wallpaper_2)
+            TempImage = TempImage.Stretch(112, 63)
+            PictureBox_TimedWallpaper2.Picture = TempImage.Picture
+            TempImage.clear
+          Endif
         Endif
       Endif
     Endif
@@ -192,15 +191,17 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
   
   Dim TempImage As Image
   
-  If Not IconView_local.Key = "" Then
-    If Not (IconView_local.key = Timed_Wallpaper_1) Then
-      If Not (IconView_local.key = Timed_Wallpaper_2) Then
-        If Not (IconView_local.key = Timed_Wallpaper_4) Then
-          Timed_Wallpaper_3 = IconView_local.Key
-          TempImage = Image.Load(Timed_Wallpaper_3)
-          TempImage = TempImage.Stretch(112, 63)
-          PictureBox_TimedWallpaper3.Picture = TempImage.Picture
-          TempImage.clear
+  If Mouse.Left Then
+    If Not IconView_Local.Key = "" Then
+      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
+        If Not (IconView_Local.key = Timed_Wallpaper_2) Then
+          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+            Timed_Wallpaper_3 = IconView_Local.Key
+            TempImage = Image.Load(Timed_Wallpaper_3)
+            TempImage = TempImage.Stretch(112, 63)
+            PictureBox_TimedWallpaper3.Picture = TempImage.Picture
+            TempImage.clear
+          Endif
         Endif
       Endif
     Endif
@@ -214,15 +215,17 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
   
   Dim TempImage As Image
   
-  If Not IconView_local.Key = "" Then
-    If Not (IconView_local.key = Timed_Wallpaper_1) Then
-      If Not (IconView_local.key = Timed_Wallpaper_2) Then
-        If Not (IconView_local.key = Timed_Wallpaper_3) Then
-          Timed_Wallpaper_4 = IconView_local.Key
-          TempImage = Image.Load(Timed_Wallpaper_4)
-          TempImage = TempImage.Stretch(112, 63)
-          PictureBox_TimedWallpaper4.Picture = TempImage.Picture
-          TempImage.clear
+  If Mouse.Left Then
+    If Not IconView_Local.Key = "" Then
+      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
+        If Not (IconView_Local.key = Timed_Wallpaper_2) Then
+          If Not (IconView_Local.key = Timed_Wallpaper_3) Then
+            Timed_Wallpaper_4 = IconView_Local.Key
+            TempImage = Image.Load(Timed_Wallpaper_4)
+            TempImage = TempImage.Stretch(112, 63)
+            PictureBox_TimedWallpaper4.Picture = TempImage.Picture
+            TempImage.clear
+          Endif
         Endif
       Endif
     Endif
@@ -308,7 +311,7 @@ Public Sub ComboBox_Aspect_Click()
   'Set Wallpaper Aspect Sizes (None,Wallpaper,Centered,Scaled,Stretched,Zoom,Spanned)
   'A Lock Is Being Used Here
   
-  If aspect_lock = False Then
+  If Aspect_Lock = False Then
     If ComboBox_Aspect.Index = 0 Then
       Shell "gsettings set org.gnome.desktop.background picture-options none"
     Endif
@@ -331,7 +334,7 @@ Public Sub ComboBox_Aspect_Click()
       Shell "gsettings set org.gnome.desktop.background picture-options spanned"
     Endif
   Endif
-  aspect_lock = False
+  Aspect_Lock = False
   
 End
 
@@ -347,16 +350,8 @@ Public Sub SwitchButton1_Click()
 End
 
 Public Sub Button_RemoveImage_Click()
-  'Remove An Image From Program And Folder
-  'Not Kill Removes Image Permanently Use Move Function Instead And Move To Trash
   
-  If Message.Question("You Sure You Want To Remove:\n" & IconView_local.key, "Yes", "Cancel") = 1 Then
-    If Not IconView_local.Key = "" Then
-      Move IconView_local.key To User.Home & "/.local/share/Trash/files/" & File.Name(IconView_local.Key)
-      IconView_local.Remove(IconView_local.Key)
-      Load_Wallpapers
-    Endif
-  Endif
+  RemoveImageFromLocal()
   
 End
 
@@ -382,6 +377,12 @@ Public Sub TabPanel_Main_Click()
     Button_SaveImage.Visible = False
     'Spinner1.Visible = False
     ProgressBar1.Visible = False
+    
+    If Reloading_Local_wallpapers_Lock = False Then
+      Load_Wallpapers()
+      Reloading_Local_wallpapers_Lock = True
+    Endif
+    
   Endif
   
   If TabPanel_Main.Index = 1 Then
@@ -412,6 +413,7 @@ Public Sub TabPanel_Main_Click()
     Endif
     
     Loading_Desktoppr_wallpapers_Lock = True
+    
   Endif
   
 End
@@ -456,41 +458,34 @@ Public Sub HttpClient1_Finished()
       Line_String = Replace$(Line_String, "\n", "")
       Line_String = Mid$(Line_String, 8)
       'If InStr(Line_String, "185") = 0 And If InStr(Line_String, "639") = 0 And If InStr(Line_String, "540") = 0 And If InStr(Line_String, "600") = 0 Then
-        Desktoppr_IMAGE_HEIGHT = Line_String
+      Desktoppr_IMAGE_HEIGHT = Line_String
       'Endif
       
     Endif
     
-    Print "NO W" & Desktoppr_IMAGE_WIDTH
-    Print "NO H" & Desktoppr_IMAGE_HEIGHT
-    
     'IconView1 Add Items
     If Not Desktoppr_THUMB_URL = "" Then
       'If Not IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) And If Not Desktoppr_IMAGE_URL = "" Then
-        If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
-          
-           Print "YES W" & Desktoppr_IMAGE_WIDTH
-           Print "YES H" & Desktoppr_IMAGE_HEIGHT
-          
-          If Exist("/tmp/tempimage.jpeg") Then
-            Kill "/tmp/tempimage.jpeg"
-          Endif
-          
-          HttpClient2.URL = Desktoppr_THUMB_URL
-          HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
-          
-          Do While HttpClient2.Status > 0
-            Wait 0.01
-          Loop
-          
-          
-    Kill "/tmp/tempimage.jpeg"
-    Desktoppr_IMAGE_URL = ""
-    Desktoppr_THUMB_URL = ""
-    Desktoppr_IMAGE_WIDTH = ""
-    Desktoppr_IMAGE_HEIGHT = ""
-          
+      If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
+        
+        If Exist("/tmp/tempimage.jpeg") Then
+          Kill "/tmp/tempimage.jpeg"
         Endif
+        
+        HttpClient2.URL = Desktoppr_THUMB_URL
+        HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
+        
+        Do While HttpClient2.Status > 0
+          Wait 0.01
+        Loop
+        
+        Kill "/tmp/tempimage.jpeg"
+        Desktoppr_IMAGE_URL = ""
+        Desktoppr_THUMB_URL = ""
+        Desktoppr_IMAGE_WIDTH = ""
+        Desktoppr_IMAGE_HEIGHT = ""
+        
+      Endif
       'Endif
     Endif
     
@@ -537,31 +532,24 @@ Public Sub HttpClient3_Finished()
   Saved_Image_Name = ""
   ProgressBar1.Value = 0
   ProgressBar1.Refresh
-  Wait 0.01
-  Load_Wallpapers
+  'Wait 0.01
   
 End
 
 Public Sub HttpClient1_Error()
   
-  'Print ("Error Status: ") & HttpClient1.Status
-  'Print ("Error Text: ") & HttpClient1.ErrorText
   Message.Error("Error Status: " & HttpClient1.Status & "\nError Text: " & HttpClient1.ErrorText, "Okay")
   
 End
 
 Public Sub HttpClient2_Error()
   
-  'Print ("Error Status: ") & HttpClient2.Status
-  'Print ("Error Text: ") & HttpClient2.ErrorText
   Message.Error("Error Status: " & HttpClient2.Status & "\nError Text: " & HttpClient2.ErrorText, "Okay")
   
 End
 
 Public Sub HttpClient3_Error()
   
-  'Print ("Error Status: ") & HttpClient3.Status
-  'Print ("Error Text: ") & HttpClient3.ErrorText
   Message.Error("Error Status: " & HttpClient3.Status & "\nError Text: " & HttpClient3.ErrorText, "Okay")
   
 End
@@ -575,13 +563,13 @@ End
 
 Public Sub HttpClient2_Connect()
   
-  Print "(HttpClient2) Waiting for reply...\n";
+  'Print "(HttpClient2) Waiting for reply...\n";
   
 End
 
 Public Sub HttpClient3_Connect()
   
-  Print "(HttpClient3) Waiting for reply...\n";
+  'Print "(HttpClient3) Waiting for reply...\n";
   
 End
 
@@ -628,6 +616,8 @@ Public Sub Button_SaveImage_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+      
+      Reloading_Local_wallpapers_Lock = False
     Endif
   Endif
   
@@ -637,11 +627,13 @@ Public Sub HttpClient3_Progress()
   
   Dim I_PER As Integer
   Dim F_PER As Float
-
-  I_PER = (HttpClient3.Downloaded * 100) / HttpClient3.TotalDownloaded
-  F_PER = I_PER
-  F_PER = F_PER / 100
-  ProgressBar1.Value = F_PER
+  
+  If HttpClient3.Downloaded > 0 Then
+    I_PER = (HttpClient3.Downloaded * 100) / HttpClient3.TotalDownloaded
+    F_PER = I_PER
+    F_PER = F_PER / 100
+    ProgressBar1.Value = F_PER
+  Endif
   
 End
 
@@ -655,5 +647,339 @@ Public Sub Form_Close()
       HttpClient2.Close
     Endif
   Endif
+  
+End
+
+Public Sub PictureBox_TimedWallpaper1_Menu()
+  
+  TimedWallpaperMenu1.Popup
+  
+End
+
+Public Sub PictureBox_TimedWallpaper2_Menu()
+  
+  TimedWallpaperMenu2.Popup
+  
+End
+
+Public Sub PictureBox_TimedWallpaper3_Menu()
+  
+  TimedWallpaperMenu3.Popup
+  
+End
+
+Public Sub PictureBox_TimedWallpaper4_Menu()
+  
+  TimedWallpaperMenu4.Popup
+  
+End
+
+Public Sub AddImageToLocal()
+  
+  'Use Dialog To Add Image To Prorogram And Folder
+  'We Use ImageFile To Get Copy Path And File.Name(ImageFile) to get Destination Path
+  
+  Dim ImageFile As String
+  
+  Dialog.Title = "Select Image"
+  Dialog.filter = ["*.jpg;*.jpeg;*.png;", "All Files", "*.jpg;*.jpeg", "Joint Photographic Expert Group", "*.png", "Portable Network Graphics"]
+  If Dialog.OpenFile(True) Then Return
+  For Each ImageFile In Dialog.Paths
+    Copy ImageFile To User.Home & "/Pictures/Wallpaper/" & File.Name(ImageFile)
+  Next
+  Load_Wallpapers()
+  
+End
+
+Public Sub RemoveImageFromLocal()
+  
+  'Remove An Image From Program And Folder
+  'Not Kill Removes Image Permanently Use Move Function Instead And Move To Trash
+  
+  If Not IconView_Local.Key = "" Then
+    If Message.Question("You Sure You Want To Remove:\n" & IconView_Local.key, "Yes", "Cancel") = 1 Then
+      Move IconView_Local.key To User.Home & "/.local/share/Trash/files/" & File.Name(IconView_Local.Key)
+      IconView_Local.Remove(IconView_Local.Key)
+      Load_Wallpapers()
+    Endif
+  Else
+    'MSG HERE
+  Endif
+  
+End
+
+Public Sub IconViewlocalMenu_Add_Click()
+  
+  AddImageToLocal()
+  
+End
+
+Public Sub IconViewlocalMenu_Remove_Click()
+  
+  RemoveImageFromLocal()
+  
+End
+
+Public Sub IconView_Local_Menu()
+  
+  IconViewlocalMenu.Popup
+  
+End
+
+Public Sub IconViewlocalMenu_Reload_Click()
+  
+  Load_Wallpapers()
+  
+End
+
+Public Sub TimedWallpaperMenu1_SwitchWith2_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_1
+  Dim ImageTo As String = Timed_Wallpaper_2
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_1 = ImageTo
+  Timed_Wallpaper_2 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu1_SwitchWith3_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_1
+  Dim ImageTo As String = Timed_Wallpaper_3
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_1 = ImageTo
+  Timed_Wallpaper_3 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu1_SwitchWith4_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_1
+  Dim ImageTo As String = Timed_Wallpaper_4
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_1 = ImageTo
+  Timed_Wallpaper_4 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu2_SwitchWith1_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_2
+  Dim ImageTo As String = Timed_Wallpaper_1
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_2 = ImageTo
+  Timed_Wallpaper_1 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu2_SwitchWith3_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_2
+  Dim ImageTo As String = Timed_Wallpaper_3
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_2 = ImageTo
+  Timed_Wallpaper_3 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu2_SwitchWith4_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_2
+  Dim ImageTo As String = Timed_Wallpaper_4
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_2 = ImageTo
+  Timed_Wallpaper_4 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu3_SwitchWith1_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_3
+  Dim ImageTo As String = Timed_Wallpaper_1
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_3 = ImageTo
+  Timed_Wallpaper_1 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu3_SwitchWith2_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_3
+  Dim ImageTo As String = Timed_Wallpaper_2
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_3 = ImageTo
+  Timed_Wallpaper_2 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu3_SwitchWith4_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_3
+  Dim ImageTo As String = Timed_Wallpaper_4
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_3 = ImageTo
+  Timed_Wallpaper_4 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu4_SwitchWith1_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_4
+  Dim ImageTo As String = Timed_Wallpaper_1
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_4 = ImageTo
+  Timed_Wallpaper_1 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper1.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu4_SwitchWith2_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_4
+  Dim ImageTo As String = Timed_Wallpaper_2
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_4 = ImageTo
+  Timed_Wallpaper_2 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper2.Picture = TempImage.Picture
+  TempImage.Clear
+  
+End
+
+Public Sub TimedWallpaperMenu4_SwitchWith3_Click()
+  
+  Dim ImageFrom As String = Timed_Wallpaper_4
+  Dim ImageTo As String = Timed_Wallpaper_3
+  Dim TempImage As Image
+  
+  Timed_Wallpaper_4 = ImageTo
+  Timed_Wallpaper_3 = ImageFrom
+  
+  TempImage = Image.Load(ImageTo)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
+  TempImage.Clear
+  
+  TempImage = Image.Load(ImageFrom)
+  TempImage = TempImage.Stretch(112, 63)
+  PictureBox_TimedWallpaper3.Picture = TempImage.Picture
+  TempImage.Clear
   
 End
