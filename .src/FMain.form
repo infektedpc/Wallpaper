@@ -4,9 +4,35 @@
   MoveScaled(0,0,142,84)
   Icon = Picture["wallpaper.png"]
   Resizable = False
-  { TrayMenu Menu
-    Text = ("TrayMenu")
+  { TrayMenu1 Menu
+    Text = ("TrayMenu1")
     Visible = False
+    { TrayMenu1_TimeList Menu
+      Text = ("Time List")
+      Picture = Picture["icon:/16/clock"]
+      { TrayMenu1_1Min Menu
+        Text = ("1 Min")
+        Radio = True
+        Checked = True
+      }
+      { TrayMenu1_3Min Menu
+        Text = ("3 Min")
+        Radio = True
+      }
+      { TrayMenu1_5Min Menu
+        Text = ("5 Min")
+        Radio = True
+      }
+      { TrayMenu1_10Min Menu
+        Text = ("10 Min")
+        Radio = True
+      }
+    }
+    { TrayMenu1_TimedWallpapers Menu
+      Text = ("Timed Wallpapers")
+      Picture = Picture["icon:/16/screen"]
+      Toggle = True
+    }
   }
   { TimedWallpaperMenu1 Menu
     Text = ("TimedWallpaperMenu1")
@@ -99,6 +125,22 @@
       Text = ("Remove")
       Picture = Picture["icon:/16/remove"]
     }
+    { Menu4 Menu
+      Text = ("View Size")
+      { Menu3 Menu
+        Text = ("Small")
+        Radio = True
+      }
+      { Menu2 Menu
+        Text = ("Medium")
+        Radio = True
+      }
+      { Menu1 Menu
+        Text = ("Large")
+        Radio = True
+        Checked = True
+      }
+    }
     { IconViewlocalMenu_Reload Menu
       Text = ("Reload")
       Picture = Picture["icon:/16/refresh"]
@@ -108,8 +150,10 @@
     MoveScaled(116,74,7,4)
     Text = ("Aspect:")
   }
-  { TrayIcon_Main #TrayIcon
+  { TrayIcon1 #TrayIcon
     #MoveScaled(128,87)
+    Visible = True
+    Picture = Picture["wallpaper.png"]
   }
   { ComboBox_TimeList ComboBox
     MoveScaled(69,74,18,4)
