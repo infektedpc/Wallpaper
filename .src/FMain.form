@@ -6,6 +6,7 @@
   Resizable = False
   { TrayMenu1 Menu
     Text = ("TrayMenu1")
+    Enabled = False
     Visible = False
     { TrayMenu1_TimeList Menu
       Text = ("Time List")
@@ -36,6 +37,7 @@
   }
   { TimedWallpaperMenu1 Menu
     Text = ("TimedWallpaperMenu1")
+    Enabled = False
     Visible = False
     { TimedWallpaperMenu1_SwitchWith2 Menu
       Text = ("Switch with 2")
@@ -56,6 +58,7 @@
   }
   { TimedWallpaperMenu2 Menu
     Text = ("TimedWallpaperMenu2")
+    Enabled = False
     Visible = False
     { TimedWallpaperMenu2_SwitchWith1 Menu
       Text = ("Switch with 1")
@@ -76,6 +79,7 @@
   }
   { TimedWallpaperMenu3 Menu
     Text = ("TimedWallpaperMenu3")
+    Enabled = False
     Visible = False
     { TimedWallpaperMenu3_SwitchWith1 Menu
       Text = ("Switch with 1")
@@ -96,6 +100,7 @@
   }
   { TimedWallpaperMenu4 Menu
     Text = ("TimedWallpaperMenu4")
+    Enabled = False
     Visible = False
     { TimedWallpaperMenu4_SwitchWith1 Menu
       Text = ("Switch with 1")
@@ -116,6 +121,7 @@
   }
   { IconViewlocalMenu Menu
     Text = ("IconViewlocalMenu")
+    Enabled = False
     Visible = False
     { IconViewlocalMenu_Add Menu
       Text = ("Add")
@@ -125,17 +131,17 @@
       Text = ("Remove")
       Picture = Picture["icon:/16/remove"]
     }
-    { Menu4 Menu
+    { IconViewlocalMenu_ViewSize Menu
       Text = ("View Size")
-      { Menu3 Menu
+      { IconViewlocalMenu_Small Menu
         Text = ("Small")
         Radio = True
       }
-      { Menu2 Menu
+      { IconViewlocalMenu_Medium Menu
         Text = ("Medium")
         Radio = True
       }
-      { Menu1 Menu
+      { IconViewlocalMenu_Large Menu
         Text = ("Large")
         Radio = True
         Checked = True
@@ -144,6 +150,23 @@
     { IconViewlocalMenu_Reload Menu
       Text = ("Reload")
       Picture = Picture["icon:/16/refresh"]
+    }
+  }
+  { IconViewDesktopprMenu Menu
+    Text = ("IconViewDesktopprMenu")
+    Enabled = False
+    Visible = False
+    { IconViewDesktopprMenu_SetWallPaper Menu
+      Text = ("Set WallPaper")
+      Picture = Picture["icon:/16/ok"]
+    }
+    { IconViewDesktopprMenu_SaveImage Menu
+      Text = ("Save Image")
+      Picture = Picture["icon:/16/save"]
+    }
+    { IconViewDesktopprMenu_CopyUrl Menu
+      Text = ("Copy Url")
+      Picture = Picture["icon:/16/copy"]
     }
   }
   { Label_Aspect Label
@@ -162,21 +185,25 @@
   }
   { PictureBox_TimedWallpaper1 PictureBox
     MoveScaled(1,74,16,9)
+    ToolTip = ("Right-click for more options")
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper2 PictureBox
     MoveScaled(18,74,16,9)
+    ToolTip = ("Right-click for more options")
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper3 PictureBox
     MoveScaled(35,74,16,9)
+    ToolTip = ("Right-click for more options")
     Stretch = True
     Border = Border.Sunken
   }
   { PictureBox_TimedWallpaper4 PictureBox
     MoveScaled(52,74,16,9)
+    ToolTip = ("Right-click for more options")
     Stretch = True
     Border = Border.Sunken
   }
@@ -200,6 +227,7 @@
     { !IconView_Local IconView
       MoveScaled(0,0,142,67)
       #Public = True
+      ToolTip = ("Right-click for more options")
       IconLines = 1
     }
     Index = 1
@@ -207,6 +235,7 @@
     { !IconView_Desktoppr IconView
       MoveScaled(0,0,142,67)
       #Public = True
+      ToolTip = ("Right-click for more options")
     }
     Index = 0
   }
@@ -255,6 +284,7 @@
   { SpinBox_Pages SpinBox
     MoveScaled(7,79,9,4)
     Visible = False
+    Enabled = False
     MinValue = 1
     MaxValue = 4500
     Value = 1
