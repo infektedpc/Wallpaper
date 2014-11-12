@@ -2,6 +2,7 @@
 
 Public SelectedImage As String = ""
 Public MSG_Unsupported_Image_Type As String = "Please select a supported image type."
+Public MSG_No_Selected_Background As String = "Please select a background."
 Public Wallpaperloop_Value As Integer = 0
 Public Timed_Wallpaper_1 As String = ""
 Public Timed_Wallpaper_2 As String = ""
@@ -70,6 +71,8 @@ Public Sub Button_SetWallPaper_Click()
   If TabPanel_Main.Index = 0 Then
     If Not IconView_Local.Key = "" Then
       Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView_Local.Key
+      Else
+        Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -80,6 +83,8 @@ Public Sub Button_SetWallPaper_Click()
         Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
         HttpClient3.URL = IconView_Desktoppr.Key
         HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+        Else
+        Message.Info(MSG_No_Selected_Background)
       Endif
     Endif
   Endif
@@ -195,18 +200,13 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
   'First Timed Wallpaper Picturebox
   'Make Sure No Other Timed Wallpaper Has The Same Image
   
-  Dim TempImage As Image
-  
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
       If Not (IconView_Local.key = Timed_Wallpaper_2) Then
         If Not (IconView_Local.key = Timed_Wallpaper_3) Then
           If Not (IconView_Local.key = Timed_Wallpaper_4) Then
             Timed_Wallpaper_1 = IconView_Local.Key
-            TempImage = Image.Load(Timed_Wallpaper_1)
-            TempImage = TempImage.Stretch(112, 63)
-            PictureBox_TimedWallpaper1.Picture = TempImage.Picture
-            TempImage.Clear
+            PictureBox_TimedWallpaper1.Picture = Image.Load(Timed_Wallpaper_1).Stretch(112, 63).Picture
           Endif
         Endif
       Endif
@@ -218,19 +218,14 @@ End
 Public Sub PictureBox_TimedWallpaper2_MouseDown()
   'Second Timed Wallpaper Picturebox
   'Make Sure No Other Timed Wallpaper Has The Same Image
-  
-  Dim TempImage As Image
-  
+
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
       If Not (IconView_Local.key = Timed_Wallpaper_1) Then
         If Not (IconView_Local.key = Timed_Wallpaper_3) Then
           If Not (IconView_Local.key = Timed_Wallpaper_4) Then
             Timed_Wallpaper_2 = IconView_Local.Key
-            TempImage = Image.Load(Timed_Wallpaper_2)
-            TempImage = TempImage.Stretch(112, 63)
-            PictureBox_TimedWallpaper2.Picture = TempImage.Picture
-            TempImage.clear
+            PictureBox_TimedWallpaper2.Picture = Image.Load(Timed_Wallpaper_2).Stretch(112, 63).Picture
           Endif
         Endif
       Endif
@@ -243,18 +238,13 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
   'Third Timed Wallpaper Picturebox
   'Make Sure No Other Timed Wallpaper Has The Same Image
   
-  Dim TempImage As Image
-  
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
       If Not (IconView_Local.key = Timed_Wallpaper_1) Then
         If Not (IconView_Local.key = Timed_Wallpaper_2) Then
           If Not (IconView_Local.key = Timed_Wallpaper_4) Then
             Timed_Wallpaper_3 = IconView_Local.Key
-            TempImage = Image.Load(Timed_Wallpaper_3)
-            TempImage = TempImage.Stretch(112, 63)
-            PictureBox_TimedWallpaper3.Picture = TempImage.Picture
-            TempImage.clear
+            PictureBox_TimedWallpaper3.Picture = Image.Load(Timed_Wallpaper_3).Stretch(112, 63).Picture
           Endif
         Endif
       Endif
@@ -267,18 +257,13 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
   'Fourth Timed Wallpaper Picturebox
   'Make Sure No Other Timed Wallpaper Has The Same Image
   
-  Dim TempImage As Image
-  
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
       If Not (IconView_Local.key = Timed_Wallpaper_1) Then
         If Not (IconView_Local.key = Timed_Wallpaper_2) Then
           If Not (IconView_Local.key = Timed_Wallpaper_3) Then
             Timed_Wallpaper_4 = IconView_Local.Key
-            TempImage = Image.Load(Timed_Wallpaper_4)
-            TempImage = TempImage.Stretch(112, 63)
-            PictureBox_TimedWallpaper4.Picture = TempImage.Picture
-            TempImage.clear
+            PictureBox_TimedWallpaper4.Picture = Image.Load(Timed_Wallpaper_4).Stretch(112, 63).Picture
           Endif
         Endif
       Endif
@@ -413,13 +398,13 @@ Public Sub SwitchButton1_Click()
   If Not Timed_Wallpaper_1 = "" Then
     iCount = iCount + 1
   Endif
-    If Not Timed_Wallpaper_2 = "" Then
+  If Not Timed_Wallpaper_2 = "" Then
     iCount = iCount + 1
   Endif
-    If Not Timed_Wallpaper_3 = "" Then
+  If Not Timed_Wallpaper_3 = "" Then
     iCount = iCount + 1
   Endif
-    If Not Timed_Wallpaper_4 = "" Then
+  If Not Timed_Wallpaper_4 = "" Then
     iCount = iCount + 1
   Endif
   
@@ -430,13 +415,12 @@ Public Sub SwitchButton1_Click()
     Else
       SwitchButton1.Value = False
       TrayMenu1_TimedWallpapers.Checked = False
-      Message.Info("Please select at least two images")
+      Message.Info("Please select at least two images.")
     Endif
   Else
     Timer1.Enabled = False
     TrayMenu1_TimedWallpapers.Checked = False
   Endif
-  
   
 End
 
@@ -550,23 +534,25 @@ Public Sub HttpClient1_Finished()
       'If Not IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) And If Not Desktoppr_IMAGE_URL = "" Then
       If Not Desktoppr_IMAGE_WIDTH = "" And If Not Desktoppr_IMAGE_HEIGHT = "" Then
         
-        If Exist("/tmp/tempimage.jpeg") Then
-          Kill "/tmp/tempimage.jpeg"
+        If Exist("/tmp/tempimage.jpg") Then
+          Kill "/tmp/tempimage.jpg"
         Endif
         
         HttpClient2.URL = Desktoppr_THUMB_URL
-        HttpClient2.Get(Null, "/tmp/tempimage.jpeg")
+        HttpClient2.Get(Null, "/tmp/tempimage.jpg")
         
-        Do While HttpClient2.Status > 0
+        Do While HttpClient2.Status > 0 
           Wait 0.01
         Loop
         
-        Kill "/tmp/tempimage.jpeg"
+        Do While IconView_Desktoppr.Exist(Desktoppr_IMAGE_URL) = False
+          Wait 0.01
+        Loop
+        
         Desktoppr_IMAGE_URL = ""
         Desktoppr_THUMB_URL = ""
         Desktoppr_IMAGE_WIDTH = ""
         Desktoppr_IMAGE_HEIGHT = ""
-        
       Endif
       'Endif
     Endif
@@ -585,20 +571,15 @@ Public Sub HttpClient1_Finished()
   Okay_To_Exit = True
   Spinner1.Visible = False
   Spinner1.Stop
-   
+  
 End
 
 Public Sub HttpClient2_Finished()
   
-  Dim TempImage2 As Image
-  
-  If Exist("/tmp/tempimage.jpeg") Then
-    TempImage2 = Image.Load("/tmp/tempimage.jpeg")
-    TempImage2 = TempImage2.Stretch(295, 184)
-    IconView_Desktoppr.Add(Desktoppr_IMAGE_URL, Desktoppr_IMAGE_WIDTH & "x" & Desktoppr_IMAGE_HEIGHT, TempImage2.Picture)
+  If Exist("/tmp/tempimage.jpg") Then
+    IconView_Desktoppr.Add(Desktoppr_IMAGE_URL, Desktoppr_IMAGE_WIDTH & "x" & Desktoppr_IMAGE_HEIGHT, Image.Load("/tmp/tempimage.jpg").Stretch(295, 184).Picture)
     IconView_Desktoppr.Item.EnsureVisible
-    TempImage2.Clear
-    
+    Kill "/tmp/tempimage.jpg"
   Endif
   
 End
@@ -615,7 +596,6 @@ Public Sub HttpClient3_Finished()
   Saved_Image_Name = ""
   ProgressBar1.Value = 0
   ProgressBar1.Refresh
-  'Wait 0.01
   Reload_Wallpapers()
   
 End
@@ -643,7 +623,7 @@ Public Sub HttpClient1_Connect()
   'Print "(HttpClient1) Waiting for reply...\n";
   Spinner1.Visible = True
   Spinner1.Start
-   
+  
 End
 
 Public Sub HttpClient2_Connect()
@@ -660,7 +640,7 @@ End
 
 Public Sub Button_PreviousPage_Click()
   
-  If HttpClient2.Status = 0 Then
+  If HttpClient2.Status = 0 And If HttpClient1.Status = 0 Then
     SpinBox_Pages.Value = SpinBox_Pages.Value - 1
   Endif
   
@@ -668,17 +648,19 @@ End
 
 Public Sub Button_NextPage_Click()
   
-  If HttpClient2.Status = 0 Then
+  If HttpClient2.Status = 0 And If HttpClient1.Status = 0 Then
     SpinBox_Pages.Value = SpinBox_Pages.Value + 1
   Endif
   
 End
 
 Public Sub SpinBox_Pages_Change()
-
-  IconView_Desktoppr.Clear
-  HttpClient1.URL = "https://api.desktoppr.co/1/wallpapers?page=" & SpinBox_Pages.Value
-  HttpClient1.Get()
+  
+  If HttpClient2.Status = 0 And If HttpClient1.Status = 0 Then
+    IconView_Desktoppr.Clear
+    HttpClient1.URL = "https://api.desktoppr.co/1/wallpapers?page=" & SpinBox_Pages.Value
+    HttpClient1.Get()
+  Endif
   
 End
 
@@ -686,7 +668,7 @@ Public Sub Button_RandomPage_Click()
   
   Dim A_Random_Number As Integer
   
-  If HttpClient2.Status = 0 Then
+  If HttpClient2.Status = 0 And If HttpClient1.Status = 0 Then
     A_Random_Number = Rand(SpinBox_Pages.MinValue, SpinBox_Pages.MaxValue)
     Randomize
     SpinBox_Pages.Value = A_Random_Number
@@ -701,6 +683,8 @@ Public Sub Button_SaveImage_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+      Else
+        Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -835,7 +819,7 @@ Public Sub RemoveImageFromLocal()
       Load_Wallpapers()
     Endif
   Else
-    'MSG HERE
+        Message.Info(MSG_No_Selected_Background)
   Endif
   
 End
@@ -868,25 +852,18 @@ Public Sub TimedWallpaperMenu1_SwitchWith2_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_1
   Dim ImageTo As String = Timed_Wallpaper_2
-  Dim TempImage As Image
   
   Timed_Wallpaper_1 = ImageTo
   Timed_Wallpaper_2 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
@@ -897,25 +874,18 @@ Public Sub TimedWallpaperMenu1_SwitchWith3_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_1
   Dim ImageTo As String = Timed_Wallpaper_3
-  Dim TempImage As Image
   
   Timed_Wallpaper_1 = ImageTo
   Timed_Wallpaper_3 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
@@ -926,25 +896,18 @@ Public Sub TimedWallpaperMenu1_SwitchWith4_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_1
   Dim ImageTo As String = Timed_Wallpaper_4
-  Dim TempImage As Image
   
   Timed_Wallpaper_1 = ImageTo
   Timed_Wallpaper_4 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
@@ -955,25 +918,18 @@ Public Sub TimedWallpaperMenu2_SwitchWith1_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_2
   Dim ImageTo As String = Timed_Wallpaper_1
-  Dim TempImage As Image
   
   Timed_Wallpaper_2 = ImageTo
   Timed_Wallpaper_1 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
@@ -984,25 +940,18 @@ Public Sub TimedWallpaperMenu2_SwitchWith3_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_2
   Dim ImageTo As String = Timed_Wallpaper_3
-  Dim TempImage As Image
   
   Timed_Wallpaper_2 = ImageTo
   Timed_Wallpaper_3 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
@@ -1013,25 +962,18 @@ Public Sub TimedWallpaperMenu2_SwitchWith4_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_2
   Dim ImageTo As String = Timed_Wallpaper_4
-  Dim TempImage As Image
   
   Timed_Wallpaper_2 = ImageTo
   Timed_Wallpaper_4 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
@@ -1042,25 +984,18 @@ Public Sub TimedWallpaperMenu3_SwitchWith1_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_3
   Dim ImageTo As String = Timed_Wallpaper_1
-  Dim TempImage As Image
   
   Timed_Wallpaper_3 = ImageTo
   Timed_Wallpaper_1 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
@@ -1071,25 +1006,18 @@ Public Sub TimedWallpaperMenu3_SwitchWith2_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_3
   Dim ImageTo As String = Timed_Wallpaper_2
-  Dim TempImage As Image
   
   Timed_Wallpaper_3 = ImageTo
   Timed_Wallpaper_2 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
@@ -1100,25 +1028,18 @@ Public Sub TimedWallpaperMenu3_SwitchWith4_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_3
   Dim ImageTo As String = Timed_Wallpaper_4
-  Dim TempImage As Image
   
   Timed_Wallpaper_3 = ImageTo
   Timed_Wallpaper_4 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
@@ -1129,25 +1050,18 @@ Public Sub TimedWallpaperMenu4_SwitchWith1_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_4
   Dim ImageTo As String = Timed_Wallpaper_1
-  Dim TempImage As Image
   
   Timed_Wallpaper_4 = ImageTo
   Timed_Wallpaper_1 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper1.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper1.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper1.Picture = New Picture(1, 1, True)
   Endif
@@ -1158,25 +1072,18 @@ Public Sub TimedWallpaperMenu4_SwitchWith2_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_4
   Dim ImageTo As String = Timed_Wallpaper_2
-  Dim TempImage As Image
   
   Timed_Wallpaper_4 = ImageTo
   Timed_Wallpaper_2 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper2.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper2.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper2.Picture = New Picture(1, 1, True)
   Endif
@@ -1187,25 +1094,18 @@ Public Sub TimedWallpaperMenu4_SwitchWith3_Click()
   
   Dim ImageFrom As String = Timed_Wallpaper_4
   Dim ImageTo As String = Timed_Wallpaper_3
-  Dim TempImage As Image
   
   Timed_Wallpaper_4 = ImageTo
   Timed_Wallpaper_3 = ImageFrom
   
   If Not ImageTo = "" Then
-    TempImage = Image.Load(ImageTo)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper4.Picture = TempImage.Picture 
-    TempImage.Clear
+    PictureBox_TimedWallpaper4.Picture = Image.Load(ImageTo).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper4.Picture = New Picture(1, 1, True)
   Endif
   
   If Not ImageFrom = "" Then
-    TempImage = Image.Load(ImageFrom)
-    TempImage = TempImage.Stretch(112, 63)
-    PictureBox_TimedWallpaper3.Picture = TempImage.Picture
-    TempImage.Clear
+    PictureBox_TimedWallpaper3.Picture = Image.Load(ImageFrom).Stretch(112, 63).Picture
   Else
     PictureBox_TimedWallpaper3.Picture = New Picture(1, 1, True)
   Endif
@@ -1288,6 +1188,8 @@ Public Sub IconViewDesktopprMenu_SetWallPaper_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+      Else
+        Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -1300,6 +1202,8 @@ Public Sub IconViewDesktopprMenu_SaveImage_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
+      Else
+        Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -1309,7 +1213,7 @@ Public Sub IconViewDesktopprMenu_CopyUrl_Click()
   
   If Not IconView_Desktoppr.key = "" Then
     Clipboard.Copy(IconView_Desktoppr.key)
-    Message.Info("Url copied to Clipboard")
+    Message.Info("Url copied to Clipboard.")
   Endif
   
 End

@@ -5,10 +5,11 @@ WallPaper
 0.0.4
 
 gb.image
-gb.gtk
+gb.qt4
 gb.form
 gb.net
 gb.net.curl
+gb.qt4.ext
 gb.vb
 gb.web
 
