@@ -17,7 +17,7 @@ $ sudo apt-get install gambas3-runtime
 ```   
 or if you want to develop on the Program
 ```
-$ sudo apt-get install gambas3|
+$ sudo apt-get install gambas3
 ```
 
 Support or Contact
