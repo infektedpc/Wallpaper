@@ -71,8 +71,8 @@ Public Sub Button_SetWallPaper_Click()
   If TabPanel_Main.Index = 0 Then
     If Not IconView_Local.Key = "" Then
       Shell "gsettings set org.gnome.desktop.background picture-uri file://" & IconView_Local.Key
-      Else
-        Message.Info(MSG_No_Selected_Background)
+    Else
+      Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -83,7 +83,7 @@ Public Sub Button_SetWallPaper_Click()
         Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
         HttpClient3.URL = IconView_Desktoppr.Key
         HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
-        Else
+      Else
         Message.Info(MSG_No_Selected_Background)
       Endif
     Endif
@@ -140,7 +140,9 @@ Public Sub Load_Wallpapers()
       IconView_Local.Add(User.Home & "/Pictures/Wallpaper/" & FileName, Wallpapersize, TempImage.Picture)
       'IconView_Local.Refresh
       TempImage.Clear
+      
       Wait 0.01
+      
       ' IconView_Local.Item.EnsureVisible
     Endif
   Next
@@ -202,13 +204,9 @@ Public Sub PictureBox_TimedWallpaper1_MouseDown()
   
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
-      If Not (IconView_Local.key = Timed_Wallpaper_2) Then
-        If Not (IconView_Local.key = Timed_Wallpaper_3) Then
-          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
-            Timed_Wallpaper_1 = IconView_Local.Key
-            PictureBox_TimedWallpaper1.Picture = Image.Load(Timed_Wallpaper_1).Stretch(112, 63).Picture
-          Endif
-        Endif
+      If Not (IconView_Local.key = Timed_Wallpaper_2) And If Not (IconView_Local.key = Timed_Wallpaper_3) And If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+        Timed_Wallpaper_1 = IconView_Local.Key
+        PictureBox_TimedWallpaper1.Picture = Image.Load(Timed_Wallpaper_1).Stretch(112, 63).Picture
       Endif
     Endif
   Endif
@@ -218,16 +216,12 @@ End
 Public Sub PictureBox_TimedWallpaper2_MouseDown()
   'Second Timed Wallpaper Picturebox
   'Make Sure No Other Timed Wallpaper Has The Same Image
-
+  
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
-      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
-        If Not (IconView_Local.key = Timed_Wallpaper_3) Then
-          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
-            Timed_Wallpaper_2 = IconView_Local.Key
-            PictureBox_TimedWallpaper2.Picture = Image.Load(Timed_Wallpaper_2).Stretch(112, 63).Picture
-          Endif
-        Endif
+      If Not (IconView_Local.key = Timed_Wallpaper_1) And If Not (IconView_Local.key = Timed_Wallpaper_3) And If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+        Timed_Wallpaper_2 = IconView_Local.Key
+        PictureBox_TimedWallpaper2.Picture = Image.Load(Timed_Wallpaper_2).Stretch(112, 63).Picture
       Endif
     Endif
   Endif
@@ -240,13 +234,9 @@ Public Sub PictureBox_TimedWallpaper3_MouseDown()
   
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
-      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
-        If Not (IconView_Local.key = Timed_Wallpaper_2) Then
-          If Not (IconView_Local.key = Timed_Wallpaper_4) Then
-            Timed_Wallpaper_3 = IconView_Local.Key
-            PictureBox_TimedWallpaper3.Picture = Image.Load(Timed_Wallpaper_3).Stretch(112, 63).Picture
-          Endif
-        Endif
+      If Not (IconView_Local.key = Timed_Wallpaper_1) And If Not (IconView_Local.key = Timed_Wallpaper_2) And If Not (IconView_Local.key = Timed_Wallpaper_4) Then
+        Timed_Wallpaper_3 = IconView_Local.Key
+        PictureBox_TimedWallpaper3.Picture = Image.Load(Timed_Wallpaper_3).Stretch(112, 63).Picture
       Endif
     Endif
   Endif
@@ -259,13 +249,9 @@ Public Sub PictureBox_TimedWallpaper4_MouseDown()
   
   If Mouse.Left Then
     If Not IconView_Local.Key = "" Then
-      If Not (IconView_Local.key = Timed_Wallpaper_1) Then
-        If Not (IconView_Local.key = Timed_Wallpaper_2) Then
-          If Not (IconView_Local.key = Timed_Wallpaper_3) Then
-            Timed_Wallpaper_4 = IconView_Local.Key
-            PictureBox_TimedWallpaper4.Picture = Image.Load(Timed_Wallpaper_4).Stretch(112, 63).Picture
-          Endif
-        Endif
+      If Not (IconView_Local.key = Timed_Wallpaper_1) And If Not (IconView_Local.key = Timed_Wallpaper_2) And If Not (IconView_Local.key = Timed_Wallpaper_3) Then
+        Timed_Wallpaper_4 = IconView_Local.Key
+        PictureBox_TimedWallpaper4.Picture = Image.Load(Timed_Wallpaper_4).Stretch(112, 63).Picture
       Endif
     Endif
   Endif
@@ -683,8 +669,8 @@ Public Sub Button_SaveImage_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
-      Else
-        Message.Info(MSG_No_Selected_Background)
+    Else
+      Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -816,10 +802,9 @@ Public Sub RemoveImageFromLocal()
     If Message.Question("You Sure You Want To Remove:\n" & IconView_Local.key, "Yes", "Cancel") = 1 Then
       Move IconView_Local.key To User.Home & "/.local/share/Trash/files/" & File.Name(IconView_Local.Key)
       IconView_Local.Remove(IconView_Local.Key)
-      Load_Wallpapers()
     Endif
   Else
-        Message.Info(MSG_No_Selected_Background)
+    Message.Info(MSG_No_Selected_Background)
   Endif
   
 End
@@ -1188,8 +1173,8 @@ Public Sub IconViewDesktopprMenu_SetWallPaper_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
-      Else
-        Message.Info(MSG_No_Selected_Background)
+    Else
+      Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   
@@ -1202,8 +1187,8 @@ Public Sub IconViewDesktopprMenu_SaveImage_Click()
       Saved_Image_Name = File.Name(IconView_Desktoppr.Key)
       HttpClient3.URL = IconView_Desktoppr.Key
       HttpClient3.Get(Null, "/home/" & System.User.Name & "/Pictures/Wallpaper/" & Saved_Image_Name)
-      Else
-        Message.Info(MSG_No_Selected_Background)
+    Else
+      Message.Info(MSG_No_Selected_Background)
     Endif
   Endif
   

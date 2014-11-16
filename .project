@@ -1,9 +1,10 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.6.1
+# Compiled with Gambas 3.6.2
 Title=WallPaper
 Startup=FMain
+Profiling=1
 Icon=wallpaper.png
-Version=0.0.4
+Version=0.0.5
 Component=gb.image
 Component=gb.qt4
 Component=gb.form
